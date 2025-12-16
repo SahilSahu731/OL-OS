@@ -24,8 +24,12 @@ app.use(express.json());
 // Database
 connectDB();
 
+import { initScheduledJobs } from './utils/scheduler';
+
+// ...
 // Seed Data
 seedCategories();
+initScheduledJobs();
 
 // Routes
 app.use('/api/v1/users', authRoutes);
@@ -35,6 +39,13 @@ app.use('/api/v1/metrics', metricRoutes);
 app.use('/api/v1/weekly-logs', weeklyLogRoutes);
 app.use('/api/v1/finance', financeRoutes);
 app.use('/api/v1/content', contentRoutes);
+import workoutRoutes from './routes/workoutRoutes';
+import noteRoutes from './routes/noteRoutes';
+import roadmapRoutes from './routes/roadmapRoutes';
+
+app.use('/api/v1/workouts', workoutRoutes);
+app.use('/api/v1/notes', noteRoutes);
+app.use('/api/v1/roadmap', roadmapRoutes);
 
 app.get('/', (req, res) => {
   res.send('Life Tracking System API is running');

@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import { LayoutDashboard, User, BookOpen, LogOut, Target, Wallet, Settings, Hourglass, Clapperboard } from 'lucide-react';
+import { LayoutDashboard, User, BookOpen, LogOut, Target, Wallet, Settings, Hourglass, Clapperboard, Dumbbell, Inbox, ListTree } from 'lucide-react';
 import { useAuthStore } from '@/stores/authStore';
 import { useRouter } from 'next/navigation';
 
@@ -43,10 +43,28 @@ export function UserSidebar() {
       active: pathname === '/dashboard/habits' || pathname.startsWith('/dashboard/habits'),
     },
     {
+      label: 'Workout',
+      icon: Dumbbell,
+      href: '/dashboard/workout',
+      active: pathname === '/dashboard/workout' || pathname.startsWith('/dashboard/workout'),
+    },
+    {
       label: 'Deep Focus',
       icon: Hourglass,
       href: '/dashboard/focus',
       active: pathname === '/dashboard/focus',
+    },
+    {
+      label: 'System Roadmap',
+      icon: ListTree,
+      href: '/dashboard/roadmap',
+      active: pathname === '/dashboard/roadmap',
+    },
+    {
+      label: 'The Vault',
+      icon: Inbox,
+      href: '/dashboard/vault',
+      active: pathname === '/dashboard/vault',
     },
     {
       label: 'Content',
