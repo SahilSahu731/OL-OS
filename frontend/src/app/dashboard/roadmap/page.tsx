@@ -12,7 +12,7 @@ import { useAuthStore } from '@/stores/authStore';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
+const API_URL = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1'}`;
 
 export default function RoadmapPage() {
     const { token } = useAuthStore();

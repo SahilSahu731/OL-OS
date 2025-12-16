@@ -16,7 +16,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import { toast } from 'sonner';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1'; // Fallback
+const API_URL = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1'}`; // Fallback
 
 export default function ProfilePage() {
   const { user, token, updateUser } = useAuthStore();

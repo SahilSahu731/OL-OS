@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import axios from 'axios';
 import { useAuthStore } from './authStore';
 
-const API_URL = 'http://localhost:5000/api/v1/users';
+const API_URL = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1'}/users`;
 
 interface User {
   _id: string;

@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import axios from 'axios';
 import { useAuthStore } from './authStore';
 
-const API_URL = 'http://localhost:5000/api/v1/tasks';
+const API_URL = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1'}/tasks`;
 
 export interface Task {
   _id: string;
@@ -207,7 +207,7 @@ export const useTaskStore = create<TaskState>((set, get) => ({
       // Assuming metrics route is at /api/v1/metrics
       // To fix this cleanly, I should probably split the store or have a base API url const.
       // I'll just hardcode the metrics endpoint relative to base for now.
-      const METRICS_URL = 'http://localhost:5000/api/v1/metrics';
+      const METRICS_URL = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1'}/metrics`;
       
       const response = await axios.get(`${METRICS_URL}?startDate=${startDate}&endDate=${endDate}`, config);
       
@@ -235,7 +235,7 @@ export const useTaskStore = create<TaskState>((set, get) => ({
     try {
       const token = useAuthStore.getState().token;
       const config = { headers: { Authorization: `Bearer ${token}` } };
-      const METRICS_URL = 'http://localhost:5000/api/v1/metrics';
+      const METRICS_URL = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1'}/metrics`;
       
       await axios.post(METRICS_URL, { date, ...data }, config);
     } catch (error) {
@@ -248,7 +248,7 @@ export const useTaskStore = create<TaskState>((set, get) => ({
       try {
         const token = useAuthStore.getState().token;
         const config = { headers: { Authorization: `Bearer ${token}` } };
-        const METRICS_URL = 'http://localhost:5000/api/v1/metrics';
+        const METRICS_URL = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1'}/metrics`;
         await axios.post(`${METRICS_URL}/seed`, {}, config);
         // Maybe refresh after seeding
       } catch (error) {
