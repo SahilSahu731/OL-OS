@@ -10,6 +10,7 @@ import taskRoutes from './routes/taskRoutes';
 import metricRoutes from './routes/metricRoutes';
 import weeklyLogRoutes from './routes/weeklyLogRoutes';
 import financeRoutes from './routes/financeRoutes';
+import contentRoutes from './routes/contentRoutes';
 
 dotenv.config();
 
@@ -33,6 +34,7 @@ app.use('/api/v1/tasks', taskRoutes);
 app.use('/api/v1/metrics', metricRoutes);
 app.use('/api/v1/weekly-logs', weeklyLogRoutes);
 app.use('/api/v1/finance', financeRoutes);
+app.use('/api/v1/content', contentRoutes);
 
 app.get('/', (req, res) => {
   res.send('Life Tracking System API is running');
