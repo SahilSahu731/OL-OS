@@ -13,13 +13,13 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
 export default function CategoriesPage() {
-  const { categories, fetchCategories, createCategory, isLoading } = useCategoryStore();
+  const { categories, fetchCategoriesWithStats, createCategory, isLoading } = useCategoryStore();
   const [newCategoryName, setNewCategoryName] = useState('');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   useEffect(() => {
-    fetchCategories();
-  }, [fetchCategories]);
+    fetchCategoriesWithStats();
+  }, [fetchCategoriesWithStats]);
 
   const handleCreate = async () => {
       if (!newCategoryName) return;
@@ -38,16 +38,6 @@ export default function CategoriesPage() {
       if (n.includes('art') || n.includes('create') || n.includes('write')) return Music;
       if (n.includes('money') || n.includes('fin')) return Database;
       return Layers; 
-  };
-
-  const getLevelInfo = (name: string) => {
-       // Mock logic - in real app, we'd sum XP from tasks in this category
-       // For demo, hash name to get stable random numbers
-       let hash = 0;
-       for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
-       const level = (Math.abs(hash) % 20) + 1;
-       const progress = (Math.abs(hash) % 100);
-       return { level, progress };
   };
 
   return (
@@ -117,7 +107,9 @@ export default function CategoriesPage() {
                      <div className="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center text-green-500"><Star className="w-5 h-5"/></div>
                      <div>
                          <p className="text-xs text-muted-foreground uppercase font-bold">Mastery Level</p>
-                         <p className="text-2xl font-black">12</p>
+                         <p className="text-2xl font-black">
+                            {categories.reduce((acc, cat) => acc + (cat.level || 0), 0)}
+                         </p>
                      </div>
                  </CardContent>
              </Card>
@@ -125,8 +117,10 @@ export default function CategoriesPage() {
                  <CardContent className="p-4 flex items-center gap-4">
                      <div className="w-10 h-10 rounded-full bg-orange-500/10 flex items-center justify-center text-orange-500"><Zap className="w-5 h-5"/></div>
                      <div>
-                         <p className="text-xs text-muted-foreground uppercase font-bold">Active Streaks</p>
-                         <p className="text-2xl font-black">8</p>
+                         <p className="text-xs text-muted-foreground uppercase font-bold">Total XP</p>
+                         <p className="text-2xl font-black">
+                            {categories.reduce((acc, cat) => acc + (cat.xp || 0), 0)}
+                         </p>
                      </div>
                  </CardContent>
              </Card>
@@ -134,8 +128,10 @@ export default function CategoriesPage() {
                  <CardContent className="p-4 flex items-center gap-4">
                      <div className="w-10 h-10 rounded-full bg-purple-500/10 flex items-center justify-center text-purple-500"><BarChart3 className="w-5 h-5"/></div>
                      <div>
-                         <p className="text-xs text-muted-foreground uppercase font-bold">Completion</p>
-                         <p className="text-2xl font-black">87%</p>
+                         <p className="text-xs text-muted-foreground uppercase font-bold">Active Tasks</p>
+                         <p className="text-2xl font-black">
+                            {categories.reduce((acc, cat) => acc + (cat.taskCount || 0), 0)}
+                         </p>
                      </div>
                  </CardContent>
              </Card>
@@ -152,7 +148,10 @@ export default function CategoriesPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {categories.map((category, index) => {
                     const Icon = getIcon(category.name);
-                    const { level, progress } = getLevelInfo(category.name);
+                    const level = category.level || 1;
+                    const progress = category.progress || 0;
+                    const xp = category.xp || 0;
+                    const taskCount = category.taskCount || 0;
                     
                     return (
                         <Card key={category._id} className="group relative overflow-hidden flex flex-col justify-between border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl h-[320px]">
@@ -181,11 +180,11 @@ export default function CategoriesPage() {
                                 <div className="grid grid-cols-2 gap-2 text-xs">
                                     <div className="p-2 rounded bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-100 dark:border-zinc-800">
                                         <span className="text-muted-foreground block mb-0.5">XP</span>
-                                        <span className="font-mono font-bold">2,450</span>
+                                        <span className="font-mono font-bold">{xp.toLocaleString()}</span>
                                     </div>
                                     <div className="p-2 rounded bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-100 dark:border-zinc-800">
                                         <span className="text-muted-foreground block mb-0.5">Tasks</span>
-                                        <span className="font-mono font-bold">12 Active</span>
+                                        <span className="font-mono font-bold">{taskCount} Done</span>
                                     </div>
                                 </div>
 
@@ -199,12 +198,14 @@ export default function CategoriesPage() {
                             </CardContent>
 
                             <CardFooter className="relative z-10 pt-2 border-t border-zinc-100 dark:border-zinc-800/50">
-                                <Button variant="ghost" className="w-full justify-between h-auto py-3 px-2 hover:bg-transparent group/btn">
-                                    <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground group-hover/btn:text-primary transition-colors">Open Matrix</span>
-                                    <div className="w-6 h-6 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center group-hover/btn:bg-primary group-hover/btn:text-white transition-all">
-                                        <ArrowRight className="w-3 h-3" />
-                                    </div>
-                                </Button>
+                                <Link href={`/dashboard/categories/${category._id}`} className="w-full">
+                                    <Button variant="ghost" className="w-full justify-between h-auto py-3 px-2 hover:bg-transparent group/btn">
+                                        <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground group-hover/btn:text-primary transition-colors">Open Matrix</span>
+                                        <div className="w-6 h-6 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center group-hover/btn:bg-primary group-hover/btn:text-white transition-all">
+                                            <ArrowRight className="w-3 h-3" />
+                                        </div>
+                                    </Button>
+                                </Link>
                             </CardFooter>
                         </Card>
                     );

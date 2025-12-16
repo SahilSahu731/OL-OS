@@ -356,6 +356,10 @@ export default function AnalyticsPage() {
                                 <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.8}/>
                                 <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0}/>
                             </linearGradient>
+                            <linearGradient id="colorScore" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8}/>
+                                <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
+                            </linearGradient>
                         </defs>
                         <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={gridColor} opacity={0.3} />
                         <XAxis dataKey="date" stroke={axisColor} fontSize={12} tickLine={false} axisLine={false} minTickGap={30} />
@@ -364,6 +368,7 @@ export default function AnalyticsPage() {
                         <Tooltip contentStyle={tooltipStyle} />
                         <Area yAxisId="left" type="monotone" dataKey="weight" stroke="#8b5cf6" fillOpacity={1} fill="url(#colorWeight)" name="Weight (kg)" connectNulls />
                         <Area yAxisId="right" type="monotone" dataKey="hp" stroke="#10b981" fillOpacity={1} fill="url(#colorHp)" name="HP" connectNulls />
+                        <Area yAxisId="left" type="monotone" dataKey="score" stroke="#3b82f6" fillOpacity={0.5} fill="url(#colorScore)" name="Score" connectNulls />
                     </AreaChart>
                 </ResponsiveContainer>
             </div>

@@ -6,23 +6,27 @@ import { format, subDays, addDays, startOfWeek, endOfWeek, eachDayOfInterval, is
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ChevronLeft, ChevronRight, Check, X, Flame, Calendar, Activity } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Check, Activity, Calendar } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 
 type ViewMode = 'week' | 'month' | 'quarter';
 
 export function HabitTracker() {
-  const { tasks, logs, metrics, fetchLogs, fetchMetrics, seedMetrics, toggleLog, updateMetric } = useTaskStore();
+  const { tasks, logs, metrics, fetchLogs, fetchMetrics, toggleLog, updateMetric } = useTaskStore();
   const [viewMode, setViewMode] = useState<ViewMode>('week');
   const [currentDate, setCurrentDate] = useState(new Date());
+  
+  // Metric Editing State
+  const [editingMetric, setEditingMetric] = useState<{date: Date, type: 'weight' | 'hp', value: string} | null>(null);
 
   // Calculate Date Range based on View Mode
   const getDateRange = () => {
     let start, end;
     if (viewMode === 'week') {
-       start = subDays(currentDate, 6); // Last 7 days rolling or strict week? 
-       // Keeping strict week for better alignment usually
        start = startOfWeek(currentDate, { weekStartsOn: 1 }); 
        end = endOfWeek(currentDate, { weekStartsOn: 1 });
     } else if (viewMode === 'month') {
@@ -73,6 +77,27 @@ export function HabitTracker() {
           if (logs[`${task._id}-${dateStr}`]) completedCount++;
       });
       return Math.round((completedCount / tasks.length) * 100);
+  };
+
+  const getDailyScore = (date: Date) => {
+      const dateStr = format(date, 'yyyy-MM-dd');
+      let completedCount = 0;
+      tasks.forEach(task => {
+          if (logs[`${task._id}-${dateStr}`]) completedCount++;
+      });
+      return completedCount * 2;
+  };
+
+  const saveMetric = async () => {
+      if (!editingMetric) return;
+      const dateStr = format(editingMetric.date, 'yyyy-MM-dd');
+      try {
+          await updateMetric(dateStr, { [editingMetric.type]: parseFloat(editingMetric.value) });
+          setEditingMetric(null);
+          toast.success('Metric updated');
+      } catch {
+          toast.error('Failed to update metric');
+      }
   };
 
   return (
@@ -156,6 +181,86 @@ export function HabitTracker() {
                     );
                 })}
 
+                {/* VISUAL SEPARATOR */}
+                <div className="sticky left-0 z-10 p-2 bg-zinc-50 dark:bg-zinc-900 border-b border-r border-zinc-200 dark:border-zinc-800 text-xs font-bold uppercase tracking-widest text-muted-foreground shadow-[4px_0_15px_-5px_rgba(0,0,0,0.1)]">
+                    Vital Metrics
+                </div>
+                {days.map(day => (
+                     <div key={`sep-${day.toISOString()}`} className="border-b border-r border-zinc-100 dark:border-zinc-800/50 bg-zinc-50/50 dark:bg-zinc-900/30" />
+                ))}
+
+                {/* ROW: DAILY SCORE */}
+                <div className="sticky left-0 z-10 p-3 px-5 text-sm font-semibold border-b border-r border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 flex items-center justify-between shadow-[4px_0_15px_-5px_rgba(0,0,0,0.1)]">
+                    <div className="flex items-center gap-3">
+                        <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
+                        <span>Daily Score</span>
+                    </div>
+                </div>
+                {days.map(day => {
+                    const score = getDailyScore(day);
+                    return (
+                        <div key={`score-${day.toISOString()}`} className="p-1 border-b border-r border-zinc-100 dark:border-zinc-800/50 flex items-center justify-center bg-white dark:bg-zinc-950">
+                            <span className="text-xs font-mono font-bold text-blue-600 dark:text-blue-400">{score}</span>
+                        </div>
+                    );
+                })}
+
+                {/* ROW: WEIGHT */}
+                <div className="sticky left-0 z-10 p-3 px-5 text-sm font-semibold border-b border-r border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 flex items-center justify-between shadow-[4px_0_15px_-5px_rgba(0,0,0,0.1)]">
+                    <div className="flex items-center gap-3">
+                        <span className="w-1.5 h-1.5 rounded-full bg-purple-500" />
+                        <span>Weight (kg)</span>
+                    </div>
+                </div>
+                {days.map(day => {
+                   const dateStr = format(day, 'yyyy-MM-dd');
+                   const val = metrics[dateStr]?.weight;
+                   const isFuture = day > new Date();
+                   return (
+                       <div key={`weight-${day.toISOString()}`} className="p-1 border-b border-r border-zinc-100 dark:border-zinc-800/50 flex items-center justify-center bg-zinc-50/50 dark:bg-zinc-900/30">
+                           <button 
+                                disabled={isFuture}
+                                onClick={() => setEditingMetric({ date: day, type: 'weight', value: val ? val.toString() : '' })}
+                                className="w-full h-full min-h-[40px] rounded hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors text-xs font-mono text-muted-foreground hover:text-foreground flex items-center justify-center"
+                           >
+                               {val || '-'}
+                           </button>
+                       </div>
+                   );
+                })}
+
+                {/* ROW: HP */}
+                <div className="sticky left-0 z-10 p-3 px-5 text-sm font-semibold border-b border-r border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 flex items-center justify-between shadow-[4px_0_15px_-5px_rgba(0,0,0,0.1)]">
+                    <div className="flex items-center gap-3">
+                        <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
+                        <span>Sleep / HP</span>
+                    </div>
+                </div>
+                {days.map(day => {
+                   const dateStr = format(day, 'yyyy-MM-dd');
+                   const val = metrics[dateStr]?.hp;
+                   const isFuture = day > new Date();
+                   return (
+                       <div key={`hp-${day.toISOString()}`} className="p-1 border-b border-r border-zinc-100 dark:border-zinc-800/50 flex items-center justify-center bg-white dark:bg-zinc-950">
+                           <button 
+                                disabled={isFuture}
+                                onClick={() => setEditingMetric({ date: day, type: 'hp', value: val ? val.toString() : '' })}
+                                className="w-full h-full min-h-[40px] rounded hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors text-xs font-mono text-muted-foreground hover:text-foreground flex items-center justify-center"
+                           >
+                               {val || '-'}
+                           </button>
+                       </div>
+                   );
+                })}
+                
+                {/* VISUAL SEPARATOR */}
+                <div className="sticky left-0 z-10 p-2 bg-zinc-50 dark:bg-zinc-900 border-b border-r border-zinc-200 dark:border-zinc-800 text-xs font-bold uppercase tracking-widest text-muted-foreground shadow-[4px_0_15px_-5px_rgba(0,0,0,0.1)]">
+                    Directives
+                </div>
+                {days.map(day => (
+                     <div key={`sep-task-${day.toISOString()}`} className="border-b border-r border-zinc-100 dark:border-zinc-800/50 bg-zinc-50/50 dark:bg-zinc-900/30" />
+                ))}
+
                 {/* Task Rows */}
                 {tasks.map((task, idx) => (
                     <>
@@ -168,9 +273,8 @@ export function HabitTracker() {
                                 <span className={cn("w-1.5 h-1.5 rounded-full", task.active ? "bg-green-500 animate-pulse" : "bg-zinc-300")} />
                                 <span className="truncate max-w-[140px]">{task.title}</span>
                             </div>
-                            {/* Fire Icon for streak if relevant data existed in task object, simpler to just show category icon or similar */}
                              <div className="flex items-center gap-1 text-[10px] bg-secondary px-1.5 py-0.5 rounded text-muted-foreground font-mono">
-                                 LVL 1
+                                 {task.difficulty || 'Med'}
                              </div>
                         </div>
 
@@ -229,6 +333,31 @@ export function HabitTracker() {
                 </div>
             )}
         </div>
+
+        {/* METRIC EDIT DIALOG */}
+        <Dialog open={!!editingMetric} onOpenChange={(open) => !open && setEditingMetric(null)}>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>Log {editingMetric?.type === 'weight' ? 'Body Weight' : 'Sleep / HP'}</DialogTitle>
+                </DialogHeader>
+                <div className="py-4 space-y-4">
+                    <div className="space-y-2">
+                         <Label>{editingMetric?.type === 'weight' ? 'Weight (kg)' : 'HP Level (0-10)'}</Label>
+                         <Input 
+                            type="number" 
+                            step="0.1"
+                            autoFocus
+                            value={editingMetric?.value || ''}
+                            onChange={(e) => setEditingMetric(prev => prev ? ({ ...prev, value: e.target.value }) : null)}
+                            onKeyDown={(e) => e.key === 'Enter' && saveMetric()}
+                         />
+                    </div>
+                </div>
+                <DialogFooter>
+                    <Button onClick={saveMetric}>Save Log</Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
       </CardContent>
     </Card>
   );

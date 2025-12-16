@@ -8,6 +8,10 @@ interface Category {
   _id: string;
   name: string;
   slug: string;
+  xp?: number;
+  level?: number;
+  progress?: number;
+  taskCount?: number;
 }
 
 interface CategoryState {
@@ -16,6 +20,7 @@ interface CategoryState {
   error: string | null;
   
   fetchCategories: () => Promise<void>;
+  fetchCategoriesWithStats: () => Promise<void>;
   createCategory: (name: string) => Promise<void>;
   updateCategory: (id: string, name: string) => Promise<void>;
   deleteCategory: (id: string) => Promise<void>;
@@ -35,6 +40,24 @@ export const useCategoryStore = create<CategoryState>((set, get) => ({
       set({ 
         isLoading: false, 
         error: error.response?.data?.message || 'Failed to fetch categories' 
+      });
+    }
+  },
+
+  fetchCategoriesWithStats: async () => {
+    set({ isLoading: true, error: null });
+    try {
+      const token = useAuthStore.getState().token;
+      const config = {
+        headers: { Authorization: `Bearer ${token}` },
+      };
+      // Note: Endpoint /stats must be defined in backend routes
+      const response = await axios.get(`${API_URL}/stats`, config);
+      set({ categories: response.data, isLoading: false });
+    } catch (error: any) {
+      set({ 
+        isLoading: false, 
+        error: error.response?.data?.message || 'Failed to fetch category stats' 
       });
     }
   },
