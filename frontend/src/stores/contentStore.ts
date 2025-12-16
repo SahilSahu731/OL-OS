@@ -26,7 +26,7 @@ interface ContentStore {
   deleteContent: (id: string) => Promise<void>;
 }
 
-export const useContentStore = create<ContentStore>((set, get) => ({
+export const useContentStore = create<ContentStore>((set) => ({
   contents: [],
   isLoading: false,
 
@@ -37,24 +37,24 @@ export const useContentStore = create<ContentStore>((set, get) => ({
       const config = { headers: { Authorization: `Bearer ${token}` } };
       const response = await axios.get(API_URL, config);
       set({ contents: response.data, isLoading: false });
-    } catch (error) {
+    } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
       console.error('Fetch contents error:', error);
       set({ isLoading: false });
     }
   },
 
-  createContent: async (data) => {
+  createContent: async (data: Partial<ContentItem>) => {
     try {
       const token = useAuthStore.getState().token;
       const config = { headers: { Authorization: `Bearer ${token}` } };
       const response = await axios.post(API_URL, data, config);
       set((state) => ({ contents: [response.data, ...state.contents] }));
-    } catch (error) {
+    } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
       console.error('Create content error:', error);
     }
   },
 
-  updateContent: async (id, data) => {
+  updateContent: async (id: string, data: Partial<ContentItem>) => {
     try {
       const token = useAuthStore.getState().token;
       const config = { headers: { Authorization: `Bearer ${token}` } };
@@ -62,12 +62,12 @@ export const useContentStore = create<ContentStore>((set, get) => ({
       set((state) => ({
         contents: state.contents.map((c) => (c._id === id ? response.data : c)),
       }));
-    } catch (error) {
+    } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
       console.error('Update content error:', error);
     }
   },
 
-  deleteContent: async (id) => {
+  deleteContent: async (id: string) => {
     try {
       const token = useAuthStore.getState().token;
       const config = { headers: { Authorization: `Bearer ${token}` } };
@@ -75,7 +75,7 @@ export const useContentStore = create<ContentStore>((set, get) => ({
       set((state) => ({
         contents: state.contents.filter((c) => c._id !== id),
       }));
-    } catch (error) {
+    } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
       console.error('Delete content error:', error);
     }
   },

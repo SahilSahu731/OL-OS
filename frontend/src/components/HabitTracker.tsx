@@ -263,9 +263,9 @@ export function HabitTracker() {
 
                 {/* Task Rows */}
                 {tasks.map((task, idx) => (
-                    <>
+                    <div key={task._id} style={{ display: 'contents' }}>
                         {/* Task Title Cell */}
-                        <div key={`title-${task._id}`} className={cn(
+                        <div className={cn(
                             "sticky left-0 z-10 p-3 px-5 text-sm font-semibold border-b border-r border-zinc-200 dark:border-zinc-800 flex items-center justify-between shadow-[4px_0_15px_-5px_rgba(0,0,0,0.1)] transition-colors",
                             idx % 2 === 0 ? "bg-white dark:bg-zinc-950" : "bg-zinc-50/50 dark:bg-zinc-900/30"
                         )}>
@@ -317,7 +317,7 @@ export function HabitTracker() {
                                 </div>
                             );
                         })}
-                    </>
+                    </div>
                 ))}
             </div>
             

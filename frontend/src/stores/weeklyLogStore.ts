@@ -36,7 +36,7 @@ export const useWeeklyLogStore = create<WeeklyLogStore>((set, get) => ({
             const config = { headers: { Authorization: `Bearer ${token}` } };
             const response = await axios.get(`${API_URL}/weekly-logs`, config);
             set({ logs: response.data });
-        } catch (error) {
+        } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
             console.error('Fetch Logs Error', error);
         }
     },
@@ -47,7 +47,7 @@ export const useWeeklyLogStore = create<WeeklyLogStore>((set, get) => ({
             const config = { headers: { Authorization: `Bearer ${token}` } };
             const response = await axios.get(`${API_URL}/weekly-logs/${date}`, config);
             set({ currentLog: response.data });
-        } catch (error) {
+        } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
             console.error('Fetch Log Error', error);
         }
     },
@@ -60,7 +60,7 @@ export const useWeeklyLogStore = create<WeeklyLogStore>((set, get) => ({
             set({ currentLog: response.data });
             // Refresh list if needed
             get().fetchLogs();
-        } catch (error) {
+        } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
             console.error('Update Log Error', error);
             throw error;
         }

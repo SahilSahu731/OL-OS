@@ -37,6 +37,7 @@ export default function AdminCategoriesPage() {
       setNewCategory('');
       toast.success('Category created');
     } catch (err) {
+      console.log(err);
       toast.error('Failed to create category');
     }
   };
@@ -48,6 +49,7 @@ export default function AdminCategoriesPage() {
       setEditingId(null);
       toast.success('Category updated');
     } catch (err) {
+      console.log(err);
       toast.error('Failed to update category');
     }
   };
@@ -58,6 +60,7 @@ export default function AdminCategoriesPage() {
         await deleteCategory(id);
         toast.success('Category deleted');
       } catch (err) {
+        console.log(err);
         toast.error('Failed to delete category');
       }
     }

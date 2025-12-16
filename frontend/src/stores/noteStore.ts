@@ -25,7 +25,7 @@ interface NoteState {
   deleteNote: (id: string) => Promise<void>;
 }
 
-export const useNoteStore = create<NoteState>((set, get) => ({
+export const useNoteStore = create<NoteState>((set) => ({
   notes: [],
   isLoading: false,
   error: null,
@@ -37,23 +37,23 @@ export const useNoteStore = create<NoteState>((set, get) => ({
       const config = { headers: { Authorization: `Bearer ${token}` } };
       const response = await axios.get(`${API_URL}/notes`, config);
       set({ notes: response.data, isLoading: false });
-    } catch (error: any) {
+    } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
       set({ error: error.message, isLoading: false });
     }
   },
 
-  createNote: async (noteData) => {
+  createNote: async (noteData: Partial<Note>) => {
     try {
       const token = useAuthStore.getState().token;
       const config = { headers: { Authorization: `Bearer ${token}` } };
       const response = await axios.post(`${API_URL}/notes`, noteData, config);
       set(state => ({ notes: [response.data, ...state.notes] }));
-    } catch (error: any) {
+    } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
        console.error(error);
     }
   },
 
-  updateNote: async (id, noteData) => {
+  updateNote: async (id: string, noteData: Partial<Note>) => {
     try {
       const token = useAuthStore.getState().token;
       const config = { headers: { Authorization: `Bearer ${token}` } };
@@ -61,12 +61,12 @@ export const useNoteStore = create<NoteState>((set, get) => ({
       set(state => ({ 
         notes: state.notes.map(n => n._id === id ? response.data : n) 
       }));
-    } catch (error: any) {
+    } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
         console.error(error);
     }
   },
 
-  deleteNote: async (id) => {
+  deleteNote: async (id: string) => {
     try {
       const token = useAuthStore.getState().token;
       const config = { headers: { Authorization: `Bearer ${token}` } };
@@ -74,7 +74,7 @@ export const useNoteStore = create<NoteState>((set, get) => ({
       set(state => ({ 
         notes: state.notes.filter(n => n._id !== id) 
       }));
-    } catch (error: any) {
+    } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
         console.error(error);
     }
   },

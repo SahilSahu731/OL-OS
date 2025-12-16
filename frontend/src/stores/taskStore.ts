@@ -29,8 +29,8 @@ interface TaskState {
   error: string | null;
   
   fetchTasks: () => Promise<void>;
-  createTask: (taskData: any) => Promise<void>;
-  updateTask: (id: string, taskData: any) => Promise<void>;
+  createTask: (taskData: Omit<Task, '_id'>) => Promise<void>;
+  updateTask: (id: string, taskData: Partial<Task>) => Promise<void>;
   deleteTask: (id: string) => Promise<void>;
   
   fetchLogs: (startDate: string, endDate: string) => Promise<void>;
@@ -61,7 +61,7 @@ export const useTaskStore = create<TaskState>((set, get) => ({
       };
       const response = await axios.get(API_URL, config);
       set({ tasks: response.data, isLoading: false });
-    } catch (error: any) {
+    } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
       set({ 
         isLoading: false, 
         error: error.response?.data?.message || 'Failed to fetch tasks' 
@@ -85,7 +85,7 @@ export const useTaskStore = create<TaskState>((set, get) => ({
         tasks: [...state.tasks, response.data],
         isLoading: false 
       }));
-    } catch (error: any) {
+    } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
       set({ 
         isLoading: false, 
         error: error.response?.data?.message || 'Failed to create task' 
@@ -110,7 +110,7 @@ export const useTaskStore = create<TaskState>((set, get) => ({
         tasks: state.tasks.map(t => t._id === id ? response.data : t),
         isLoading: false 
       }));
-    } catch (error: any) {
+    } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
       set({ 
         isLoading: false, 
         error: error.response?.data?.message || 'Failed to update task' 
@@ -135,7 +135,7 @@ export const useTaskStore = create<TaskState>((set, get) => ({
         tasks: state.tasks.filter(t => t._id !== id),
         isLoading: false 
       }));
-    } catch (error: any) {
+    } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
       set({ 
         isLoading: false, 
         error: error.response?.data?.message || 'Failed to delete task' 
@@ -153,7 +153,7 @@ export const useTaskStore = create<TaskState>((set, get) => ({
       const response = await axios.get(`${API_URL}/logs?startDate=${startDate}&endDate=${endDate}`, config);
       
       const logsMap: Record<string, boolean> = {};
-      response.data.forEach((log: any) => {
+      response.data.forEach((log: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
           logsMap[`${log.task}-${log.date}`] = true;
       });
 
@@ -212,7 +212,7 @@ export const useTaskStore = create<TaskState>((set, get) => ({
       const response = await axios.get(`${METRICS_URL}?startDate=${startDate}&endDate=${endDate}`, config);
       
       const metricsMap: Record<string, { weight: number; hp: number }> = {};
-      response.data.forEach((m: any) => {
+      response.data.forEach((m: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
           metricsMap[m.date] = { weight: m.weight, hp: m.hp };
       });
 

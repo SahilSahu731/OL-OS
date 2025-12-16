@@ -2,10 +2,10 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
-import { useSettingsStore } from '@/stores/settingsStore';
+import { useSettingsStore, Currency } from '@/stores/settingsStore';
 import { useTheme } from 'next-themes';
 import { Button } from '@/components/ui/button';
-import { Moon, Sun, Laptop, Check } from 'lucide-react';
+import { Moon, Sun, Laptop } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useEffect, useState } from 'react';
 
@@ -74,7 +74,7 @@ export default function SettingsPage() {
           <CardContent className="space-y-6">
              <div className="space-y-2 max-w-sm">
                 <Label>Currency</Label>
-                <Select value={currency} onValueChange={(val: any) => setCurrency(val)}>
+                <Select value={currency} onValueChange={(val) => setCurrency(val as Currency)}>
                     <SelectTrigger>
                         <SelectValue placeholder="Select currency" />
                     </SelectTrigger>

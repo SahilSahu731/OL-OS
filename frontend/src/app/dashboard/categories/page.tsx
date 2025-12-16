@@ -5,12 +5,11 @@ import { useCategoryStore } from '@/stores/categoryStore';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
-import { Grid, Layers, Code, Heart, Brain, Briefcase, Globe, Music, Cpu, Database, Zap, Shield, ArrowRight, Plus, Star, BarChart3, Lock } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { Progress } from '@/components/ui/progress';
+import { Grid, Layers, Code, Heart, Brain, Briefcase, Globe, Music, Database, ArrowRight, Plus, BarChart3, Lock, Star, Zap } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Progress } from '@/components/ui/progress';
 
 export default function CategoriesPage() {
   const { categories, fetchCategoriesWithStats, createCategory, isLoading } = useCategoryStore();

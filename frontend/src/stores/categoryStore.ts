@@ -26,7 +26,7 @@ interface CategoryState {
   deleteCategory: (id: string) => Promise<void>;
 }
 
-export const useCategoryStore = create<CategoryState>((set, get) => ({
+export const useCategoryStore = create<CategoryState>((set) => ({
   categories: [],
   isLoading: false,
   error: null,
@@ -36,7 +36,7 @@ export const useCategoryStore = create<CategoryState>((set, get) => ({
     try {
       const response = await axios.get(API_URL);
       set({ categories: response.data, isLoading: false });
-    } catch (error: any) {
+    } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
       set({ 
         isLoading: false, 
         error: error.response?.data?.message || 'Failed to fetch categories' 
@@ -54,7 +54,7 @@ export const useCategoryStore = create<CategoryState>((set, get) => ({
       // Note: Endpoint /stats must be defined in backend routes
       const response = await axios.get(`${API_URL}/stats`, config);
       set({ categories: response.data, isLoading: false });
-    } catch (error: any) {
+    } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
       set({ 
         isLoading: false, 
         error: error.response?.data?.message || 'Failed to fetch category stats' 
@@ -79,7 +79,7 @@ export const useCategoryStore = create<CategoryState>((set, get) => ({
         categories: [...state.categories, response.data],
         isLoading: false 
       }));
-    } catch (error: any) {
+    } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
       set({ 
         isLoading: false, 
         error: error.response?.data?.message || 'Failed to create category' 
@@ -105,7 +105,7 @@ export const useCategoryStore = create<CategoryState>((set, get) => ({
         categories: state.categories.map(c => c._id === id ? response.data : c),
         isLoading: false 
       }));
-    } catch (error: any) {
+    } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
       set({ 
         isLoading: false, 
         error: error.response?.data?.message || 'Failed to update category' 
@@ -131,7 +131,7 @@ export const useCategoryStore = create<CategoryState>((set, get) => ({
         categories: state.categories.filter(c => c._id !== id),
         isLoading: false 
       }));
-    } catch (error: any) {
+    } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
       set({ 
         isLoading: false, 
         error: error.response?.data?.message || 'Failed to delete category' 

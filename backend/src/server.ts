@@ -5,7 +5,6 @@ import { connectDB } from './config/db';
 import authRoutes from './routes/authRoutes';
 
 import categoryRoutes from './routes/categoryRoutes';
-import { seedCategories } from './controllers/categoryController';
 import taskRoutes from './routes/taskRoutes';
 import metricRoutes from './routes/metricRoutes';
 import weeklyLogRoutes from './routes/weeklyLogRoutes';
@@ -25,12 +24,9 @@ app.use(express.json());
 connectDB();
 
 import { initScheduledJobs } from './utils/scheduler';
-import { seedRoadmap } from './utils/seedRoadmap';
 
 // ...
 // Seed Data
-seedCategories();
-seedRoadmap();
 initScheduledJobs();
 
 // Routes

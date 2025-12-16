@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-type Currency = 'USD' | 'INR' | 'EUR' | 'GBP' | 'JPY';
+export type Currency = 'USD' | 'INR' | 'EUR' | 'GBP' | 'JPY';
 
 interface SettingsState {
   currency: Currency;

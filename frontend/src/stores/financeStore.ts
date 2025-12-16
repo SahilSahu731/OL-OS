@@ -87,7 +87,7 @@ export const useFinanceStore = create<FinanceState>((set, get) => ({
     }
   },
 
-  addTransaction: async (data) => {
+  addTransaction: async (data: Partial<Transaction>) => {
     set({ isLoading: true });
     try {
         const token = useAuthStore.getState().token;
@@ -99,12 +99,12 @@ export const useFinanceStore = create<FinanceState>((set, get) => ({
             isLoading: false
         }));
         await get().fetchSummary(); 
-    } catch (error: any) {
+    } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
         set({ isLoading: false, error: error.message });
     }
   },
 
-  addDebt: async (data) => {
+  addDebt: async (data: Partial<Debt>) => {
       set({ isLoading: true });
       try {
           const token = useAuthStore.getState().token;
@@ -115,12 +115,12 @@ export const useFinanceStore = create<FinanceState>((set, get) => ({
               debts: [response.data, ...state.debts],
               isLoading: false
           }));
-      } catch (error: any) {
+      } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
           set({ isLoading: false, error: error.message });
       }
   },
 
-  toggleDebt: async (id) => {
+  toggleDebt: async (id: string) => {
       try {
           const token = useAuthStore.getState().token;
           const config = { headers: { Authorization: `Bearer ${token}` } };
@@ -129,12 +129,12 @@ export const useFinanceStore = create<FinanceState>((set, get) => ({
           set(state => ({
               debts: state.debts.map(d => d._id === id ? response.data : d)
           }));
-      } catch (error: any) {
+      } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
           console.error('Failed to toggle debt', error);
       }
   },
 
-  deleteTransaction: async (id) => {
+  deleteTransaction: async (id: string) => {
     try {
         const token = useAuthStore.getState().token;
         const config = { headers: { Authorization: `Bearer ${token}` } };
@@ -144,12 +144,12 @@ export const useFinanceStore = create<FinanceState>((set, get) => ({
             transactions: state.transactions.filter(t => t._id !== id)
         }));
         await get().fetchSummary(); 
-    } catch (error: any) {
+    } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
         console.error('Failed to delete', error);
     }
   },
 
-  deleteDebt: async (id) => {
+  deleteDebt: async (id: string) => {
       try {
           const token = useAuthStore.getState().token;
           const config = { headers: { Authorization: `Bearer ${token}` } };
@@ -158,7 +158,7 @@ export const useFinanceStore = create<FinanceState>((set, get) => ({
           set(state => ({
               debts: state.debts.filter(d => d._id !== id)
           }));
-      } catch (error: any) {
+      } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
           console.error('Failed to delete debt', error);
       }
   }

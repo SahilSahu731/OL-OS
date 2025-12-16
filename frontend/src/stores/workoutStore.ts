@@ -41,7 +41,7 @@ interface WorkoutState {
   deleteWorkout: (id: string) => Promise<void>;
 }
 
-export const useWorkoutStore = create<WorkoutState>((set, get) => ({
+export const useWorkoutStore = create<WorkoutState>((set) => ({
   workouts: [],
   isLoading: false,
   error: null,
@@ -58,7 +58,7 @@ export const useWorkoutStore = create<WorkoutState>((set, get) => ({
 
       const response = await axios.get(`${API_URL}/workouts`, config);
       set({ workouts: response.data, isLoading: false });
-    } catch (error: any) {
+    } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
       set({ 
         error: error.response?.data?.message || 'Failed to fetch workouts',
         isLoading: false 
@@ -66,7 +66,7 @@ export const useWorkoutStore = create<WorkoutState>((set, get) => ({
     }
   },
 
-  createWorkout: async (workoutData) => {
+  createWorkout: async (workoutData: Partial<Workout>) => {
     set({ isLoading: true, error: null });
     try {
       const token = useAuthStore.getState().token;
@@ -81,7 +81,7 @@ export const useWorkoutStore = create<WorkoutState>((set, get) => ({
         workouts: [response.data, ...state.workouts],
         isLoading: false 
       }));
-    } catch (error: any) {
+    } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
       set({ 
         error: error.response?.data?.message || 'Failed to create workout',
         isLoading: false 
@@ -90,7 +90,7 @@ export const useWorkoutStore = create<WorkoutState>((set, get) => ({
     }
   },
 
-  updateWorkout: async (id, workoutData) => {
+  updateWorkout: async (id: string, workoutData: Partial<Workout>) => {
     // Implementation for update
     set({ isLoading: true, error: null });
     try {
@@ -106,7 +106,7 @@ export const useWorkoutStore = create<WorkoutState>((set, get) => ({
           workouts: state.workouts.map(w => w._id === id ? response.data : w),
           isLoading: false 
         }));
-      } catch (error: any) {
+      } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
         set({ 
           error: error.response?.data?.message || 'Failed to update workout',
           isLoading: false 
@@ -115,7 +115,7 @@ export const useWorkoutStore = create<WorkoutState>((set, get) => ({
       }
   },
 
-  deleteWorkout: async (id) => {
+  deleteWorkout: async (id: string) => {
     set({ isLoading: true, error: null });
     try {
       const token = useAuthStore.getState().token;
@@ -130,7 +130,7 @@ export const useWorkoutStore = create<WorkoutState>((set, get) => ({
         workouts: state.workouts.filter(w => w._id !== id),
         isLoading: false 
       }));
-    } catch (error: any) {
+    } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
       set({ 
         error: error.response?.data?.message || 'Failed to delete workout',
         isLoading: false 

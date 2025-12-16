@@ -5,22 +5,17 @@ import { useParams, useRouter } from 'next/navigation';
 import { useCategoryStore } from '@/stores/categoryStore';
 import { useTaskStore } from '@/stores/taskStore'; // Assuming we have this
 import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { 
   ArrowLeft, 
   Target, 
   Trophy, 
-  Flame, 
-  Calendar, 
   CheckCircle2, 
-  Circle,
   Plus,
   MoreVertical,
   Activity,
   Zap
 } from 'lucide-react';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { 
     DropdownMenu, 
     DropdownMenuContent, 
@@ -33,7 +28,8 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 export default function CategoryDetailPage() {
-  const { id } = useParams();
+  const params = useParams();
+  const id = Array.isArray(params.id) ? params.id[0] : params.id!;
   const router = useRouter();
   const { categories, fetchCategoriesWithStats } = useCategoryStore();
   const { tasks, fetchTasks, createTask, updateTask, deleteTask, toggleLog, logs, fetchLogs } = useTaskStore();
@@ -43,7 +39,7 @@ export default function CategoryDetailPage() {
   
   // New Task State
   const [newTaskTitle, setNewTaskTitle] = useState('');
-  const [newTaskDifficulty, setNewTaskDifficulty] = useState('Medium');
+  const [newTaskDifficulty, setNewTaskDifficulty] = useState<'Easy' | 'Medium' | 'Hard'>('Medium');
 
   useEffect(() => {
     fetchCategoriesWithStats();
@@ -74,7 +70,7 @@ export default function CategoryDetailPage() {
           difficulty: newTaskDifficulty,
           category: id,
           active: true,
-          startDate: new Date()
+          startDate: new Date().toISOString()
       });
       setNewTaskTitle('');
       setIsTaskDialogOpen(false);
@@ -168,7 +164,7 @@ export default function CategoryDetailPage() {
                                 </div>
                                 <div className="space-y-2">
                                     <Label>Complexity Class</Label>
-                                    <Select value={newTaskDifficulty} onValueChange={setNewTaskDifficulty}>
+                                    <Select value={newTaskDifficulty} onValueChange={(val) => setNewTaskDifficulty(val as 'Easy' | 'Medium' | 'Hard')}>
                                         <SelectTrigger>
                                             <SelectValue />
                                         </SelectTrigger>

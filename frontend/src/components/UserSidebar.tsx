@@ -9,7 +9,7 @@ import { useRouter } from 'next/navigation';
 
 export function UserSidebar() {
   const pathname = usePathname();
-  const { logout } = useAuthStore();
+  const { user, logout } = useAuthStore();
   const router = useRouter();
 
   const handleLogout = () => {
@@ -119,10 +119,10 @@ export function UserSidebar() {
           <div className="bg-muted/50 rounded-lg p-3 mb-2">
              <div className="flex justify-between items-center mb-1">
                 <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                    Level {useAuthStore.getState().user?.level || 1}
+                    Level {user?.level || 1}
                 </span>
                 <span className="text-xs font-mono text-primary">
-                    {useAuthStore.getState().user?.xp || 0} XP
+                    {user?.xp || 0} XP
                 </span>
              </div>
              
@@ -130,14 +130,14 @@ export function UserSidebar() {
              <div className="h-1.5 w-full bg-secondary rounded-full overflow-hidden">
                 <div 
                     className="h-full bg-primary transition-all duration-500" 
-                    style={{ width: `${((useAuthStore.getState().user?.xp || 0) % 1000) / 10}%` }}
+                    style={{ width: `${((user?.xp || 0) % 1000) / 10}%` }}
                 />
              </div>
              
              <div className="mt-2 text-[10px] text-center text-muted-foreground font-medium border border-border rounded px-1 py-0.5 inline-block w-full">
                  {/* Rank Logic */}
                  {(() => {
-                     const lvl = useAuthStore.getState().user?.level || 1;
+                     const lvl = user?.level || 1;
                      if (lvl >= 100) return 'Master 🏆';
                      if (lvl >= 50) return 'Expert ⚔️';
                      if (lvl >= 25) return 'Adept 🛡️';

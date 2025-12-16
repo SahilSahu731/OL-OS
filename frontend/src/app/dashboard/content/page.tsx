@@ -10,8 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus, Twitter, Instagram, Youtube, Calendar, MoreHorizontal, PenTool, LayoutTemplate, Film, Image as ImageIcon, Send, Clock, Hash, Repeat } from 'lucide-react';
-import { format } from 'date-fns';
+import { Plus, Twitter, Instagram, Youtube, Calendar, MoreHorizontal, PenTool, LayoutTemplate, Film, Image as ImageIcon, Clock, Hash, Repeat } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 

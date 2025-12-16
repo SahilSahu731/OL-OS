@@ -67,9 +67,9 @@ const WEEKLY_PLAN = [
 export default function WorkoutPage() {
   const { workouts, fetchWorkouts, createWorkout, deleteWorkout, isLoading } = useWorkoutStore();
   const [isLoggingOpen, setIsLoggingOpen] = useState(false);
-  const [initialTemplate, setInitialTemplate] = useState<any>(null);
+  const [initialTemplate, setInitialTemplate] = useState<Partial<Workout> | null>(null);
 
-  const startTemplate = (template: any) => {
+  const startTemplate = (template: Partial<Workout>) => {
       setInitialTemplate(template);
       setIsLoggingOpen(true);
   };
@@ -280,8 +280,8 @@ function LogWorkoutDialog({
 }: { 
     open: boolean, 
     onOpenChange: (open: boolean) => void, 
-    onSave: (data: any) => Promise<void>,
-    initialData?: any
+    onSave: (data: Partial<Workout>) => Promise<void>,
+    initialData?: Partial<Workout> | null
 }) {
     const [name, setName] = useState('');
     const [duration, setDuration] = useState('');
@@ -337,7 +337,9 @@ function LogWorkoutDialog({
         const newEx = [...exercises];
         const set = newEx[exIndex].sets[setIndex];
         if (set && typeof val === 'number') {
-            (set as any)[field] = val;
+            if (field === 'weight' || field === 'reps' || field === 'rpe') {
+                 set[field] = val;
+            }
         }
         setExercises(newEx);
     };
