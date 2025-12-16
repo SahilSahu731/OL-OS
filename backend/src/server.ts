@@ -45,7 +45,7 @@ app.use('/api/v1/workouts', workoutRoutes);
 app.use('/api/v1/notes', noteRoutes);
 app.use('/api/v1/roadmap', roadmapRoutes);
 
-app.get('/', (req, res) => {
+app.get('/', (req: express.Request, res: express.Response) => {
   res.send('Life Tracking System API is running');
 });
 
