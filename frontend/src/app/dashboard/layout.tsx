@@ -1,10 +1,10 @@
 'use client';
-
 import { UserSidebar } from '@/components/UserSidebar';
 import { useAuthStore } from '@/stores/authStore';
 import { StatusHUD } from '@/components/StatusHUD';
 import { useEffect, useState } from 'react';
 import PageTransition from '@/components/PageTransition';
+import { cn } from '@/lib/utils';
 
 export default function DashboardLayout({
   children,
@@ -13,6 +13,8 @@ export default function DashboardLayout({
 }) {
   const { isHydrated } = useAuthStore();
   const [mounted, setMounted] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -24,15 +26,38 @@ export default function DashboardLayout({
 
   return (
     <div className="flex min-h-screen bg-zinc-50 dark:bg-zinc-950">
-      {/* Fixed Sidebar */}
-      <div className="hidden md:block w-64 fixed inset-y-0 z-50">
-          <UserSidebar />
+      
+      {/* Mobile Sidebar Overlay */}
+      {isMobileOpen && (
+        <div 
+            className="fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm md:hidden animate-in fade-in"
+            onClick={() => setIsMobileOpen(false)}
+        />
+      )}
+
+      {/* Mobile Sidebar Drawer */}
+      <div className={cn(
+          "fixed inset-y-0 left-0 z-[70] w-64 bg-background shadow-2xl transform transition-transform duration-300 ease-in-out md:hidden",
+          isMobileOpen ? "translate-x-0" : "-translate-x-full"
+      )}>
+          <UserSidebar isCollapsed={false} toggleCollapse={() => setIsMobileOpen(false)} />
       </div>
 
-      {/* Main Content - with left margin to offset fixed sidebar */}
-      <main className="flex-1 md:pl-64 flex flex-col min-h-screen">
-          <StatusHUD />
-        <div className="flex-1 p-8 max-w-7xl mx-auto w-full">
+      {/* Desktop Fixed Sidebar */}
+      <div className={cn(
+        "hidden md:block fixed inset-y-0 z-50 transition-all duration-300 ease-in-out",
+        isCollapsed ? "w-[80px]" : "w-64"
+      )}>
+          <UserSidebar isCollapsed={isCollapsed} toggleCollapse={() => setIsCollapsed(!isCollapsed)} />
+      </div>
+
+      {/* Main Content - with dynamic left margin */}
+      <main className={cn(
+        "flex-1 flex flex-col min-h-screen transition-all duration-300 ease-in-out",
+        isCollapsed ? "md:pl-[80px]" : "md:pl-64"
+      )}>
+          <StatusHUD onMobileMenuClick={() => setIsMobileOpen(true)} />
+        <div className="flex-1 p-4 md:p-8 max-w-7xl mx-auto w-full">
           <PageTransition>
              {children}
           </PageTransition>

@@ -6,7 +6,7 @@ import { format, subDays, addDays, startOfWeek, endOfWeek, eachDayOfInterval, is
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ChevronLeft, ChevronRight, Check, Activity, Calendar } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Check, Activity, Calendar, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
@@ -293,25 +293,28 @@ export function HabitTracker() {
                                      idx % 2 === 0 ? "bg-white dark:bg-zinc-950" : "bg-zinc-50/50 dark:bg-zinc-900/30"
                                 )}>
                                     <button
-                                        disabled={isFutureDate} 
+                                        disabled={isFutureDate || (isPastDate && !isTodayDate)} 
                                         onClick={() => handleToggle(task._id, day)}
                                         className={cn(
                                             "relative w-full h-full min-h-[40px] min-w-[40px] m-1 rounded-lg flex items-center justify-center transition-all duration-300 group",
                                             isCompleted 
                                                 ? "bg-gradient-to-br from-green-500 to-emerald-600 shadow-md shadow-green-500/20 md:hover:scale-105" 
-                                                : isPastDate 
-                                                    ? "bg-zinc-100 dark:bg-zinc-900 md:hover:bg-zinc-200 dark:md:hover:bg-zinc-800"
-                                                    : "opacity-0", // Future
-                                            !isCompleted && isPastDate && "bg-zinc-100/50 dark:bg-zinc-900/50" // Dim empty historical cells
+                                                : (isPastDate && !isTodayDate)
+                                                    ? "bg-red-50 dark:bg-red-950/30 border border-red-100 dark:border-red-900/50" // Stylized for missed
+                                                    : isPastDate 
+                                                        ? "bg-zinc-100 dark:bg-zinc-900 md:hover:bg-zinc-200 dark:md:hover:bg-zinc-800"
+                                                        : "opacity-0", // Future
+                                            !isCompleted && isPastDate && !isTodayDate && "cursor-not-allowed opacity-80" 
                                         )}
                                         title={`${task.title} - ${format(day, 'MMM d')}`}
                                     >
                                         {isCompleted && (
                                             <Check className="h-5 w-5 text-white stroke-[3]" />
                                         )}
-                                        {/* Missed Indicator (Subtle Dot) */}
+                                        
+                                        {/* Missed Indicator (Red Cross) */}
                                         {!isCompleted && isPastDate && !isTodayDate && (
-                                            <div className="w-1.5 h-1.5 rounded-full bg-zinc-300 dark:bg-zinc-800 group-hover:bg-red-400 transition-colors" />
+                                            <X className="h-5 w-5 text-red-500 dark:text-red-400 stroke-[3]" />
                                         )}
                                     </button>
                                 </div>

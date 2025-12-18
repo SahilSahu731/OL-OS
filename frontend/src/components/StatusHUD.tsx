@@ -7,10 +7,15 @@ import { useSettingsStore, getCurrencySymbol, formatCurrencyValue } from '@/stor
 import { ModeToggle } from '@/components/mode-toggle';
 import { useEffect, useMemo } from 'react';
 import { Progress } from '@/components/ui/progress';
-import { Trophy, Coins, Activity, Zap } from 'lucide-react';
+import { Trophy, Coins, Activity, Zap, Menu } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { format } from 'date-fns';
 
-export function StatusHUD() {
+interface StatusHUDProps {
+    onMobileMenuClick?: () => void;
+}
+
+export function StatusHUD({ onMobileMenuClick }: StatusHUDProps) {
   const { user } = useAuthStore();
   const { currency } = useSettingsStore();
   const { summary, fetchSummary } = useFinanceStore();
@@ -40,6 +45,13 @@ export function StatusHUD() {
   return (
     <div className="flex w-full items-center justify-between px-6 py-3 bg-background/80 backdrop-blur-md border-b sticky top-0 z-50">
         
+        {/* Mobile Toggle */}
+        <div className="md:hidden">
+            <Button variant="ghost" size="icon" onClick={onMobileMenuClick}>
+                <Menu className="w-5 h-5" />
+            </Button>
+        </div>
+
         {/* Left: Welcome / Date */}
         <div className="hidden md:flex flex-col">
             <h2 className="text-sm font-bold text-muted-foreground">{format(new Date(), 'EEEE, MMMM do')}</h2>

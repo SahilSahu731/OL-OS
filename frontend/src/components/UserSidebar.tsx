@@ -3,11 +3,20 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import { LayoutDashboard, User, BookOpen, LogOut, Target, Wallet, Settings, Hourglass, Clapperboard, Dumbbell, Inbox, ListTree, Calendar } from 'lucide-react';
+import { LayoutDashboard, User, BookOpen, LogOut, Target, Wallet, Settings, Hourglass, Clapperboard, Dumbbell, Inbox, ListTree, Calendar, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useAuthStore } from '@/stores/authStore';
 import { useRouter } from 'next/navigation';
 
-export function UserSidebar() {
+import { Button } from '@/components/ui/button';
+
+// ...
+
+interface UserSidebarProps {
+  isCollapsed: boolean;
+  toggleCollapse: () => void;
+}
+
+export function UserSidebar({ isCollapsed, toggleCollapse }: UserSidebarProps) {
   const pathname = usePathname();
   const { user, logout } = useAuthStore();
   const router = useRouter();
@@ -87,74 +96,101 @@ export function UserSidebar() {
   ];
 
   return (
-    <div className="flex h-full w-64 flex-col bg-white dark:bg-zinc-950 border-r border-zinc-200 dark:border-zinc-800">
-      <div className="flex h-16 items-center px-6 border-b border-zinc-200 dark:border-zinc-800">
-        <Link href="/dashboard" className="flex items-center gap-2 font-bold text-xl text-primary">
-          <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-primary-foreground">
-             OL
-          </div>
-          <span>OS</span>
-        </Link>
+    <div className={cn(
+        "flex h-full flex-col bg-white dark:bg-zinc-950 border-r border-zinc-200 dark:border-zinc-800 transition-all duration-300 relative",
+        isCollapsed ? "w-[80px]" : "w-64"
+    )}>
+      {/* Header */}
+      <div className={cn(
+          "flex h-16 items-center border-b border-zinc-200 dark:border-zinc-800 transition-all flex-shrink-0",
+          isCollapsed ? "justify-center" : "justify-between px-4"
+      )}>
+        {!isCollapsed && (
+            <Link href="/dashboard" className="flex items-center gap-2 font-bold text-xl text-primary">
+              <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-primary-foreground min-w-[32px]">
+                 OL
+              </div>
+              <span>OS</span>
+            </Link>
+        )}
+
+        <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={toggleCollapse}
+            className={cn("text-muted-foreground hover:bg-zinc-100 dark:hover:bg-zinc-800", isCollapsed ? "h-10 w-10" : "h-8 w-8")}
+        >
+            {isCollapsed ? <ChevronRight className="h-5 w-5" /> : <ChevronLeft className="h-5 w-5" />}
+        </Button>
       </div>
-      <div className="flex-1 px-4 py-4 space-y-2">
+
+      {/* Nav Items */}
+      <div className="flex-1 px-3 py-4 space-y-2 overflow-y-auto custom-scrollbar">
         {routes.map((route) => (
           <Link
             key={route.href}
             href={route.href}
+            title={isCollapsed ? route.label : undefined}
             className={cn(
-              "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all",
+              "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all group relative",
               route.active 
                 ? "bg-primary/10 text-primary hover:bg-primary/15" 
-                : "text-zinc-500 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-zinc-100"
+                : "text-zinc-500 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-zinc-100",
+              isCollapsed && "justify-center px-0"
             )}
           >
-            <route.icon className="h-4 w-4" />
-            {route.label}
+            <route.icon className={cn("h-5 w-5 flex-shrink-0", isCollapsed ? "mx-auto" : "")} />
+            {!isCollapsed && <span>{route.label}</span>}
           </Link>
         ))}
       </div>
       
-      {/* USER STATS */}
-      <div className="px-4 py-2 border-t border-zinc-200 dark:border-zinc-800">
-          <div className="bg-muted/50 rounded-lg p-3 mb-2">
-             <div className="flex justify-between items-center mb-1">
-                <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                    Level {user?.level || 1}
-                </span>
-                <span className="text-xs font-mono text-primary">
-                    {user?.xp || 0} XP
-                </span>
-             </div>
-             
-             {/* Progress Bar */}
-             <div className="h-1.5 w-full bg-secondary rounded-full overflow-hidden">
-                <div 
-                    className="h-full bg-primary transition-all duration-500" 
-                    style={{ width: `${((user?.xp || 0) % 1000) / 10}%` }}
-                />
-             </div>
-             
-             <div className="mt-2 text-[10px] text-center text-muted-foreground font-medium border border-border rounded px-1 py-0.5 inline-block w-full">
-                 {/* Rank Logic */}
-                 {(() => {
-                     const lvl = user?.level || 1;
-                     if (lvl >= 100) return 'Master 🏆';
-                     if (lvl >= 50) return 'Expert ⚔️';
-                     if (lvl >= 25) return 'Adept 🛡️';
-                     if (lvl >= 10) return 'Apprentice 🛠️';
-                     return 'Novice 🌱';
-                 })()}
-             </div>
+      {/* USER STATS - Only show when expanded */}
+      {!isCollapsed && (
+          <div className="px-4 py-2 border-t border-zinc-200 dark:border-zinc-800 animate-in fade-in zoom-in duration-300 flex-shrink-0">
+              <div className="bg-muted/50 rounded-lg p-3 mb-2">
+                 <div className="flex justify-between items-center mb-1">
+                    <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                        Level {user?.level || 1}
+                    </span>
+                    <span className="text-xs font-mono text-primary">
+                        {user?.xp || 0} XP
+                    </span>
+                 </div>
+                 
+                 <div className="h-1.5 w-full bg-secondary rounded-full overflow-hidden">
+                    <div 
+                        className="h-full bg-primary transition-all duration-500" 
+                        style={{ width: `${((user?.xp || 0) % 1000) / 10}%` }}
+                    />
+                 </div>
+                 
+                 <div className="mt-2 text-[10px] text-center text-muted-foreground font-medium border border-border rounded px-1 py-0.5 inline-block w-full">
+                     {(() => {
+                         const lvl = user?.level || 1;
+                         if (lvl >= 100) return 'Master 🏆';
+                         if (lvl >= 50) return 'Expert ⚔️';
+                         if (lvl >= 25) return 'Adept 🛡️';
+                         if (lvl >= 10) return 'Apprentice 🛠️';
+                         return 'Novice 🌱';
+                     })()}
+                 </div>
+              </div>
           </div>
-      </div>
+      )}
 
-      <div className="p-4 border-t border-zinc-200 dark:border-zinc-800">
+      {/* Footer / Logout */}
+      <div className="p-4 border-t border-zinc-200 dark:border-zinc-800 space-y-2 flex-shrink-0">
          <button 
             onClick={handleLogout}
-            className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-destructive hover:bg-destructive/10 transition-all"
+            title={isCollapsed ? "Logout" : undefined}
+            className={cn(
+                "flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-destructive hover:bg-destructive/10 transition-all",
+                isCollapsed && "justify-center px-0"
+            )}
          >
             <LogOut className="h-4 w-4" />
-            Logout
+            {!isCollapsed && "Logout"}
          </button>
       </div>
     </div>
