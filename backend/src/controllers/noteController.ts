@@ -35,9 +35,7 @@ export const createNote = async (req: any, res: Response) => {
   }
 };
 
-// @desc    Update a note
-// @route   PUT /api/v1/notes/:id
-// @access  Private
+
 export const updateNote = async (req: any, res: Response) => {
   try {
     const note = await Note.findById(req.params.id);
@@ -64,9 +62,7 @@ export const updateNote = async (req: any, res: Response) => {
   }
 };
 
-// @desc    Delete (archive) a note
-// @route   DELETE /api/v1/notes/:id
-// @access  Private
+
 export const deleteNote = async (req: any, res: Response) => {
   try {
     const note = await Note.findById(req.params.id);
