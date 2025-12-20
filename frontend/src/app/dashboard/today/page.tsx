@@ -30,7 +30,24 @@ const MOTIVATIONAL_QUOTES = [
     { text: "The only limit to our realization of tomorrow will be our doubts of today.", author: "Franklin D. Roosevelt" },
     { text: "Act as if what you do makes a difference. It does.", author: "William James" },
     { text: "Success is the sum of small efforts, repeated day in and day out.", author: "Robert Collier" },
-    { text: "Your time is limited, so don't waste it living someone else's life.", author: "Steve Jobs" }
+    { text: "Your time is limited, so don't waste it living someone else's life.", author: "Steve Jobs" },
+    { text: "We are what we repeatedly do. Excellence, then, is not an act, but a habit.", author: "Aristotle" },
+  { text: "The only easier day was yesterday.", author: "Navy SEALs" },
+  { text: "Discipline is choosing between what you want now and what you want most.", author: "Abraham Lincoln" },
+  { text: "Do not wait; the time will never be 'just right'.", author: "Napoleon Hill" },
+  { text: "Your future is created by what you do today, not tomorrow.", author: "Robert Kiyosaki" },
+
+  // 🔥 Anime Quotes
+  { text: "Push through the pain. Giving up hurts more.", author: "Vegeta (Dragon Ball Z)" },
+  { text: "If you don't take risks, you can't create a future.", author: "Monkey D. Luffy (One Piece)" },
+  { text: "Whatever you lose, you'll find it again.", author: "Eren Yeager (Attack on Titan)" },
+  { text: "A real ninja never gives up.", author: "Jiraiya (Naruto)" },
+  { text: "If you can't do something, then don't. Believe in someone who can.", author: "Erwin Smith (Attack on Titan)" },
+  { text: "Hard work is worthless for those that don't believe in themselves.", author: "Naruto Uzumaki (Naruto)" },
+  { text: "If you don't like your destiny, don't accept it.", author: "Naruto Uzumaki (Naruto)" },
+  { text: "No matter how deep the night, it always turns to day.", author: "Brook (One Piece)" },
+  { text: "When you give up, that's when the game ends.", author: "Mitsuyoshi Anzai (Slam Dunk)" },
+  { text: "If you can't do it, then don't. Believe in someone who can.", author: "Levi Ackerman (Attack on Titan)" }        
 ];
 
 export default function TodayPage() {
