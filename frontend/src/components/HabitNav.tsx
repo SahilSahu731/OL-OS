@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import { LayoutList, Activity, BookOpen, PenLine, Layers, FlaskConical } from 'lucide-react';
+import { LayoutList, Activity, BookOpen, PenLine, Layers, FlaskConical, Trophy, User } from 'lucide-react';
 
 export function HabitNav() {
   const pathname = usePathname();
@@ -92,6 +92,30 @@ export function HabitNav() {
       >
         <FlaskConical className="h-4 w-4" />
         Habit Lab
+      </Link>
+      <Link
+        href="/dashboard/habits/challenges"
+        className={cn(
+          "flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors",
+          pathname === '/dashboard/habits/challenges'
+            ? "border-primary text-primary"
+            : "border-transparent text-muted-foreground hover:text-foreground"
+        )}
+      >
+        <Trophy className="h-4 w-4" />
+        Challenges
+      </Link>
+      <Link
+        href="/dashboard/habits/identity"
+        className={cn(
+          "flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors",
+          pathname === '/dashboard/habits/identity'
+            ? "border-primary text-primary"
+            : "border-transparent text-muted-foreground hover:text-foreground"
+        )}
+      >
+        <User className="h-4 w-4" />
+        Identity
       </Link>
     </div>
   );
