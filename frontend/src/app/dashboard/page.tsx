@@ -25,15 +25,15 @@ const QUOTES = [
 
   // 🔥 Anime Quotes
   { text: "Push through the pain. Giving up hurts more.", author: "Vegeta (Dragon Ball Z)" },
-  { text: "If you don&apos;t take risks, you can&apos;t create a future.", author: "Monkey D. Luffy (One Piece)" },
-  { text: "Whatever you lose, you&apos;ll find it again.", author: "Eren Yeager (Attack on Titan)" },
+  { text: "If you don't take risks, you can't create a future.", author: "Monkey D. Luffy (One Piece)" },
+  { text: "Whatever you lose, you'll find it again.", author: "Eren Yeager (Attack on Titan)" },
   { text: "A real ninja never gives up.", author: "Jiraiya (Naruto)" },
-  { text: "If you can&apos;t do something, then don&apos;t. Believe in someone who can.", author: "Erwin Smith (Attack on Titan)" },
-  { text: "Hard work is worthless for those that don&apos;t believe in themselves.", author: "Naruto Uzumaki (Naruto)" },
-  { text: "If you don&apos;t like your destiny, don&apos;t accept it.", author: "Naruto Uzumaki (Naruto)" },
+  { text: "If you can't do something, then don't. Believe in someone who can.", author: "Erwin Smith (Attack on Titan)" },
+  { text: "Hard work is worthless for those that don't believe in themselves.", author: "Naruto Uzumaki (Naruto)" },
+  { text: "If you don't like your destiny, don't accept it.", author: "Naruto Uzumaki (Naruto)" },
   { text: "No matter how deep the night, it always turns to day.", author: "Brook (One Piece)" },
   { text: "When you give up, that&apos;s when the game ends.", author: "Mitsuyoshi Anzai (Slam Dunk)" },
-  { text: "If you can&apos;t do it, then don&apos;t. Believe in someone who can.", author: "Levi Ackerman (Attack on Titan)" },
+  { text: "If you can't do it, then don't. Believe in someone who can.", author: "Levi Ackerman (Attack on Titan)" },
 ];
 
 export default function DashboardPage() {
