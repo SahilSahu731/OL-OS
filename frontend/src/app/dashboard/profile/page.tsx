@@ -14,12 +14,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
     MapPin, Globe, Award, Zap, Brain, Shield, Heart, Edit2, Save, 
     Briefcase, GraduationCap, Languages, Fingerprint, Calendar, Mail, 
-    Github, Linkedin, Twitter, ExternalLink, User 
+    Github, Linkedin, Twitter, ExternalLink, User, Crown, Medal, Star, Rocket
 } from 'lucide-react';
 import { useState, useMemo } from 'react';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
 import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer, Tooltip } from 'recharts';
+import { cn } from '@/lib/utils';
 
 // --- DUMMY DATA ---
 const DUMMY_PROFILE = {
@@ -54,6 +55,16 @@ const DUMMY_PROFILE = {
     skills: ["React", "TypeScript", "Node.js", "Python", "AWS", "Figma", "UI/UX Design", "GraphQL"],
     goals: ["Launch SaaS Product", "Run a Marathon", "Learn Rust", "Read 50 Books"]
 };
+
+// --- TROPHY DATA ---
+const TROPHIES = [
+    { id: '1',  title: 'System Architect', description: 'Created 10+ Projects', icon: Rocket, unlocked: true, date: '2023-11-15', rarity: 'Legendary', color: 'text-purple-500', bg: 'bg-purple-500/10 border-purple-500/50' },
+    { id: '2', title: 'Early Adopter', description: 'Joined during Beta', icon: Star, unlocked: true, date: '2023-08-01', rarity: 'Rare', color: 'text-yellow-500', bg: 'bg-yellow-500/10 border-yellow-500/50' },
+    { id: '3', title: 'Code Warrior', description: '100 Day Streak', icon: Medal, unlocked: false, date: null, rarity: 'Epic', color: 'text-red-500', bg: 'bg-zinc-800 border-zinc-700' },
+    { id: '4', title: 'Bug Hunter', description: 'Resolved 50 Issues', icon: Shield, unlocked: true, date: '2023-12-10', rarity: 'Common', color: 'text-emerald-500', bg: 'bg-emerald-500/10 border-emerald-500/50' },
+    { id: '5', title: 'Social Butterfly', description: 'Connected 5 Services', icon: Globe, unlocked: false, date: null, rarity: 'Rare', color: 'text-blue-500', bg: 'bg-zinc-800 border-zinc-700' },
+    { id: '6', title: 'Zen Master', description: '50 Hours of Focus', icon: Brain, unlocked: true, date: '2024-01-05', rarity: 'Epic', color: 'text-cyan-500', bg: 'bg-cyan-500/10 border-cyan-500/50' }
+];
 
 export default function ProfilePage() {
   const { user, updateProfile } = useAuthStore();
@@ -103,9 +114,6 @@ export default function ProfilePage() {
   const handleSave = async () => {
       setLoading(true);
       try {
-        // Filter out non-updatable fields if necessary, or rely on backend to ignore them.
-        // Backend controller explicitly picks bio, tagline, location, website, goals, skills, attributes.
-        // It's safe to pass formData.
         await updateProfile(formData); 
         toast.success("Identity updated successfully");
         setIsEditOpen(false);
@@ -238,11 +246,58 @@ export default function ProfilePage() {
               <Tabs defaultValue="overview" className="w-full" onValueChange={setActiveTab}>
                   <TabsList className="w-full justify-start h-12 bg-zinc-900/50 p-1 border border-zinc-800 mb-6">
                       <TabsTrigger value="overview" className="h-full px-6">Overview</TabsTrigger>
+                      <TabsTrigger value="trophies" className="h-full px-6 gap-2"><Crown className="w-3.5 h-3.5 text-yellow-500" /> Trophy Room</TabsTrigger>
                       <TabsTrigger value="professional" className="h-full px-6">Professional</TabsTrigger>
                       <TabsTrigger value="personal" className="h-full px-6">Personal</TabsTrigger>
                       <TabsTrigger value="settings" className="h-full px-6">Settings</TabsTrigger>
                   </TabsList>
                   
+                  {/* --- TROPHIES TAB --- */}
+                  <TabsContent value="trophies" className="space-y-6">
+                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                           {TROPHIES.map((trophy, index) => (
+                               <motion.div
+                                   key={trophy.id}
+                                   initial={{ opacity: 0, scale: 0.9 }}
+                                   animate={{ opacity: 1, scale: 1 }}
+                                   transition={{ delay: index * 0.1 }}
+                               >
+                                   <div className={cn(
+                                       "relative h-48 rounded-2xl border p-4 flex flex-col items-center justify-center text-center gap-3 overflow-hidden group hover:scale-[1.02] transition-transform",
+                                       trophy.unlocked ? `${trophy.bg} shadow-lg hover:shadow-xl` : "bg-zinc-900/50 border-zinc-800 grayscale opacity-80"
+                                   )}>
+                                       {trophy.unlocked && (
+                                           <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                                       )}
+                                       
+                                       <div className={cn(
+                                           "p-4 rounded-full border-2 bg-zinc-950 relative z-10", 
+                                           trophy.unlocked ? `${trophy.color} border-current shadow-2xl` : "text-zinc-600 border-zinc-700"
+                                       )}>
+                                            <trophy.icon className="w-8 h-8" />
+                                       </div>
+                                       
+                                       <div className="relative z-10">
+                                            <h3 className={cn("font-bold text-lg", trophy.unlocked ? "text-white" : "text-zinc-500")}>{trophy.title}</h3>
+                                            <p className="text-xs text-muted-foreground">{trophy.description}</p>
+                                       </div>
+                                       
+                                       {trophy.unlocked ? (
+                                           <Badge variant="secondary" className="text-[10px] uppercase font-mono bg-black/40 text-white backdrop-blur-sm relative z-10">
+                                               {trophy.rarity}
+                                           </Badge>
+                                       ) : (
+                                            <div className="absolute inset-0 flex items-center justify-center bg-zinc-950/60 backdrop-blur-[1px] z-20">
+                                                <Badge variant="outline" className="border-zinc-600 text-zinc-500"><Shield className="w-3 h-3 mr-1" /> LOCKED</Badge>
+                                            </div>
+                                       )}
+
+                                   </div>
+                               </motion.div>
+                           ))}
+                       </div>
+                  </TabsContent>
+
                   <TabsContent value="overview" className="space-y-6">
                       {/* BIO */}
                       <Card className="border-zinc-800 bg-zinc-900/50 backdrop-blur-md">

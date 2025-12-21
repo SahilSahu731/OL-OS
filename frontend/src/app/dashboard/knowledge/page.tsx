@@ -1,170 +1,175 @@
 'use client';
 
 import { useState } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
+import { motion } from 'framer-motion';
+import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { 
-    Search, Folder, FileText, Database, Code, 
-    Book, Cloud, Lock, Hash, Star, ArrowRight 
-} from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Search, Share2, Plus, Brain, Filter } from 'lucide-react';
 
-const categories = [
-    { id: 'dev', name: 'Development Protocols', icon: Code, count: 124, color: 'text-cyan-400' },
-    { id: 'ops', name: 'System Operations', icon: Database, count: 42, color: 'text-emerald-400' },
-    { id: 'res', name: 'Research Archives', icon: Book, count: 89, color: 'text-purple-400' },
-    { id: 'sec', name: 'Security Manifests', icon: Lock, count: 15, color: 'text-red-400' },
-    { id: 'cld', name: 'Cloud Infrastructure', icon: Cloud, count: 33, color: 'text-blue-400' },
+// MOCK DATA FOR SIMULATION
+const INITIAL_NODES = [
+    { id: 1, label: 'React.js', type: 'tech', x: 50, y: 50 },
+    { id: 2, label: 'Next.js', type: 'tech', x: 60, y: 45 },
+    { id: 3, label: 'Frontend Arch', type: 'concept', x: 55, y: 60 },
+    { id: 4, label: 'UI Library', type: 'project', x: 40, y: 55 },
+    { id: 5, label: 'Productivity', type: 'concept', x: 70, y: 30 },
+    { id: 6, label: 'Zettelkasten', type: 'method', x: 75, y: 35 },
+    { id: 7, label: 'Obsidian', type: 'tool', x: 72, y: 25 },
+    { id: 8, label: 'Fitness', type: 'area', x: 20, y: 80 },
+    { id: 9, label: 'Hypertrophy', type: 'concept', x: 25, y: 85 },
+    { id: 10, label: 'Nutrition', type: 'concept', x: 15, y: 75 },
+    { id: 11, label: 'OL-OS', type: 'project', x: 50, y: 50 }, // Central
 ];
 
-const recentDocs = [
-    { title: 'Neural Interface API v2.0 Specs', cat: 'Development', date: '2h ago', tags: ['api', 'spec'] },
-    { title: 'Q4 System Optimization Report', cat: 'Operations', date: '5h ago', tags: ['report', 'kpi'] },
-    { title: 'Project Zero: Architecture Review', cat: 'Research', date: '1d ago', tags: ['arch', 'draft'] },
-    { title: 'Firewall Configuration Backup', cat: 'Security', date: '2d ago', tags: ['config', 'backup'] },
+const INITIAL_LINKS = [
+    { source: 1, target: 2 },
+    { source: 1, target: 3 },
+    { source: 1, target: 4 },
+    { source: 2, target: 11 },
+    { source: 5, target: 6 },
+    { source: 6, target: 7 },
+    { source: 8, target: 9 },
+    { source: 8, target: 10 },
+    { source: 5, target: 11 },
+    { source: 8, target: 11 },
 ];
 
-export default function KnowledgePage() {
-    const [searchQuery, setSearchQuery] = useState('');
+export default function KnowledgeBase() {
+    const [search, setSearch] = useState('');
+    const [selectedNode, setSelectedNode] = useState<number | null>(null);
 
+    // Simple visual simulation of a graph
     return (
-        <div className="space-y-8 pb-10 min-h-screen">
+        <div className="flex flex-col h-[calc(100vh-2rem)] gap-4 animate-in fade-in duration-500">
             
-            {/* HERRO SEARCH SECTION */}
-            <div className="relative py-16 px-8 rounded-3xl overflow-hidden border border-zinc-800 bg-zinc-950 flex flex-col items-center text-center gap-6">
-                 {/* Background FX */}
-                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-blue-900/20 via-zinc-950 to-zinc-950 pointer-events-none" />
-                 
-                 <div className="z-10 space-y-2">
-                     <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-white">
-                         DATA VAULT
+            {/* HEADER */}
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                     <h1 className="text-3xl font-black tracking-tight flex items-center gap-2">
+                        <Brain className="w-8 h-8 text-indigo-500" />
+                        Neural Network
                      </h1>
-                     <p className="text-zinc-400 text-lg max-w-lg mx-auto">
-                         Centralized repository for all system knowledge, documentation, and archival data.
-                     </p>
-                 </div>
-
-                 <div className="z-10 w-full max-w-2xl relative">
-                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-500" />
-                     <Input 
-                        value={searchQuery} 
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        placeholder="Search protocols, documents, or data nodes..." 
-                        className="h-14 pl-12 bg-white/5 border-zinc-700 hover:border-zinc-600 focus:border-blue-500 rounded-2xl text-lg transition-all shadow-xl"
-                     />
-                 </div>
+                     <p className="text-muted-foreground">Second Brain Knowledge Graph</p>
+                </div>
+                <div className="flex gap-2 w-full md:w-auto">
+                    <div className="relative flex-1 md:w-64">
+                         <Search className="absolute left-3 top-2.5 w-4 h-4 text-muted-foreground" />
+                         <Input 
+                            placeholder="Search nodes..." 
+                            className="pl-9 bg-background/50 border-zinc-700/50 backdrop-blur-sm" 
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                         />
+                    </div>
+                    <Button className="bg-indigo-600 hover:bg-indigo-700 font-bold"><Plus className="w-4 h-4 mr-2" /> New Node</Button>
+                </div>
             </div>
 
-            {/* CATEGORY GRID */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {categories.map((cat) => (
-                    <motion.div key={cat.id} whileHover={{ y: -4 }}>
-                        <Card className="bg-zinc-900 border-zinc-800 hover:border-zinc-700 cursor-pointer group transition-all">
-                            <CardContent className="p-6 flex items-center gap-4">
-                                <div className={`p-4 rounded-xl bg-zinc-950 border border-zinc-800 group-hover:scale-110 transition-transform duration-300 ${cat.color}`}>
-                                    <cat.icon className="w-8 h-8" />
-                                </div>
-                                <div>
-                                    <h3 className="font-bold text-lg text-zinc-200 group-hover:text-white transition-colors">
-                                        {cat.name}
-                                    </h3>
-                                    <p className="text-sm font-mono text-zinc-500">
-                                        {cat.count} Data Nodes
-                                    </p>
-                                </div>
-                                <ArrowRight className="ml-auto w-5 h-5 text-zinc-600 group-hover:text-white opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0" />
-                            </CardContent>
-                        </Card>
-                    </motion.div>
-                ))}
+            {/* MAIN VIEW */}
+            <Card className="flex-1 border-zinc-800 bg-black/80 backdrop-blur-xl overflow-hidden relative group">
                 
-                {/* Add New Category */}
-                 <motion.div whileHover={{ y: -4 }}>
-                    <Card className="bg-zinc-900/50 border-zinc-800 border-dashed hover:border-zinc-700 cursor-pointer h-full group">
-                        <CardContent className="p-6 flex items-center justify-center h-full gap-2 text-zinc-500 group-hover:text-zinc-300 transition-colors">
-                             <Database className="w-5 h-5" />
-                             <span className="font-bold uppercase tracking-wider text-xs">Initialize Node</span>
-                        </CardContent>
-                    </Card>
-                </motion.div>
-            </div>
+                {/* GRID BG */}
+                <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none" />
+                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(99,102,241,0.15),transparent_70%)] pointer-events-none" />
 
-            {/* RECENT FILES */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div className="lg:col-span-2 space-y-4">
-                    <div className="flex items-center justify-between">
-                        <h2 className="text-xl font-bold flex items-center gap-2">
-                            <FileText className="w-5 h-5 text-blue-500" /> Recent Transmissions
-                        </h2>
-                        <Button variant="ghost" size="sm" className="text-zinc-500">View All</Button>
-                    </div>
-                    
-                    <div className="space-y-3">
-                         {recentDocs.map((doc, i) => (
-                             <Card key={i} className="bg-zinc-900 border-zinc-800 hover:bg-zinc-800/50 transition-colors cursor-pointer group">
-                                 <CardContent className="p-4 flex items-center gap-4">
-                                     <div className="p-2 rounded bg-zinc-950 border border-zinc-800 text-zinc-400">
-                                         <FileText className="w-5 h-5" />
-                                     </div>
-                                     <div className="flex-1">
-                                         <h4 className="font-semibold text-zinc-200 group-hover:text-blue-400 transition-colors">
-                                             {doc.title}
-                                         </h4>
-                                         <div className="flex items-center gap-2 text-xs text-zinc-500 mt-1">
-                                             <span>{doc.cat}</span>
-                                             <span>•</span>
-                                             <span>{doc.date}</span>
-                                         </div>
-                                     </div>
-                                     <div className="flex gap-2">
-                                         {doc.tags.map(t => (
-                                             <span key={t} className="px-2 py-1 rounded bg-zinc-950 border border-zinc-800 text-[10px] uppercase font-mono text-zinc-500">
-                                                 #{t}
-                                             </span>
-                                         ))}
-                                     </div>
-                                 </CardContent>
-                             </Card>
-                         ))}
-                    </div>
+                {/* GRAPH VISUALIZATION (SIMULATED) */}
+                <div className="w-full h-full relative">
+                    {/* Render Links */}
+                    <svg className="absolute inset-0 w-full h-full pointer-events-none">
+                        {INITIAL_LINKS.map((link, i) => {
+                            const start = INITIAL_NODES.find(n => n.id === link.source);
+                            const end = INITIAL_NODES.find(n => n.id === link.target);
+                            if(!start || !end) return null;
+                            return (
+                                <motion.line
+                                    key={i}
+                                    x1={`${start.x}%`} y1={`${start.y}%`}
+                                    x2={`${end.x}%`} y2={`${end.y}%`}
+                                    stroke="currentColor"
+                                    className="text-zinc-800"
+                                    strokeWidth="1"
+                                    initial={{ pathLength: 0 }}
+                                    animate={{ pathLength: 1 }}
+                                    transition={{ duration: 1.5, delay: 0.5 }}
+                                />
+                            );
+                        })}
+                    </svg>
+
+                    {/* Render Nodes */}
+                    {INITIAL_NODES.map((node) => (
+                        <motion.div
+                            key={node.id}
+                            className="absolute transform -translate-x-1/2 -translate-y-1/2 cursor-pointer z-10"
+                            style={{ left: `${node.x}%`, top: `${node.y}%` }}
+                            initial={{ scale: 0, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            transition={{ duration: 0.5, delay: Math.random() * 0.5 }}
+                            whileHover={{ scale: 1.2 }}
+                            onClick={() => setSelectedNode(node.id)}
+                        >
+                            <div className={`
+                                w-3 h-3 rounded-full shadow-[0_0_15px_currentColor] border border-white/20
+                                ${node.id === 11 ? 'bg-white w-6 h-6 animate-pulse' : ''}
+                                ${node.type === 'tech' ? 'bg-blue-500 text-blue-500' : ''}
+                                ${node.type === 'concept' ? 'bg-purple-500 text-purple-500' : ''}
+                                ${node.type === 'project' && node.id !== 11 ? 'bg-green-500 text-green-500' : ''}
+                                ${node.type === 'area' ? 'bg-red-500 text-red-500' : ''}
+                                ${['tool','method'].includes(node.type) ? 'bg-amber-500 text-amber-500' : ''}
+                             `} />
+                            
+                            {/* Label */}
+                            <div className={`
+                                absolute top-4 left-1/2 -translate-x-1/2 text-[10px] font-mono whitespace-nowrap px-2 py-0.5 rounded bg-black/50 backdrop-blur-sm border border-white/10 text-zinc-300 pointer-events-none
+                                ${node.id === selectedNode ? 'opacity-100 scale-110 !border-indigo-500 text-white' : 'opacity-60 group-hover:opacity-100 transition-opacity'}
+                            `}>
+                                {node.label}
+                            </div>
+                        </motion.div>
+                    ))}
                 </div>
 
-                {/* PINNED / FAVORITES */}
-                <div className="space-y-4">
-                     <h2 className="text-xl font-bold flex items-center gap-2">
-                        <Star className="w-5 h-5 text-yellow-500" /> Pinned Nodes
-                    </h2>
-                    <Card className="bg-zinc-900 border-zinc-800 h-full p-6 space-y-6">
-                        <div className="space-y-2">
-                            <h4 className="font-bold text-zinc-300">Quick Access</h4>
-                            <p className="text-sm text-zinc-500">Frequently accessed data nodes and secure documents.</p>
+                {/* INSPECTOR PANEL (Overlay) */}
+                {selectedNode && (
+                    <motion.div 
+                        initial={{ x: 300, opacity: 0 }}
+                        animate={{ x: 0, opacity: 1 }}
+                        className="absolute top-4 right-4 w-72 bg-zinc-950/90 border border-zinc-800 backdrop-blur-xl p-4 rounded-xl z-20 shadow-2xl"
+                    >
+                        <div className="flex justify-between items-start mb-4">
+                            <div>
+                                <h3 className="font-bold text-lg text-white">{INITIAL_NODES.find(n => n.id === selectedNode)?.label}</h3>
+                                <Badge variant="outline" className="text-[10px] uppercase">{INITIAL_NODES.find(n => n.id === selectedNode)?.type}</Badge>
+                            </div>
+                            <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => setSelectedNode(null)}>×</Button>
                         </div>
-                        
-                        <div className="grid grid-cols-2 gap-3">
-                             {['API Keys', 'Passwords', 'Blueprints', 'Contacts'].map(item => (
-                                 <button key={item} className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 text-sm font-bold text-zinc-400 hover:text-white hover:border-zinc-700 transition-all text-left">
-                                     {item}
-                                 </button>
-                             ))}
-                        </div>
-
-                         <div className="p-4 rounded-xl bg-blue-500/10 border border-blue-500/20 space-y-2">
-                             <div className="flex items-center gap-2 text-blue-400 font-bold text-sm">
-                                 <Lock className="w-4 h-4" /> Secure Vault
+                        <div className="space-y-3 text-sm text-zinc-400">
+                             <p>Connected to {INITIAL_LINKS.filter(l => l.source === selectedNode || l.target === selectedNode).length} other nodes.</p>
+                             <div className="h-px bg-zinc-800" />
+                             <div className="bg-zinc-900/50 p-3 rounded border border-zinc-800/50 font-mono text-xs">
+                                 # Synapses: High <br/>
+                                 # Last Access: Recently
                              </div>
-                             <p className="text-xs text-blue-400/70">
-                                 Biometric authentication required for level 5 access.
-                             </p>
-                             <Button size="sm" className="w-full bg-blue-500 hover:bg-blue-600 text-white border-0 mt-2">
-                                 Unlock
-                             </Button>
-                         </div>
-                    </Card>
-                </div>
-            </div>
+                             <Button size="sm" className="w-full bg-white text-black hover:bg-zinc-200">Open File</Button>
+                        </div>
+                    </motion.div>
+                )}
 
+                {/* CONTROLS */}
+                <div className="absolute bottom-4 left-4 flex gap-2">
+                     <Button variant="outline" size="sm" className="bg-black/50 border-zinc-800 backdrop-blur-md text-zinc-400 hover:text-white"><Filter className="w-3 h-3 mr-2" /> Filter</Button>
+                     <Button variant="outline" size="sm" className="bg-black/50 border-zinc-800 backdrop-blur-md text-zinc-400 hover:text-white"><Share2 className="w-3 h-3 mr-2" /> Export Graph</Button>
+                     <div className="flex items-center gap-2 px-3 py-2 bg-black/50 border border-zinc-800 rounded-md backdrop-blur-md text-xs text-zinc-500">
+                         <span className="w-2 h-2 rounded-full bg-blue-500" /> Tech
+                         <span className="w-2 h-2 rounded-full bg-purple-500 ml-2" /> Concept
+                         <span className="w-2 h-2 rounded-full bg-green-500 ml-2" /> Project
+                         <span className="w-2 h-2 rounded-full bg-red-500 ml-2" /> Area
+                     </div>
+                </div>
+
+            </Card>
         </div>
     );
 }
