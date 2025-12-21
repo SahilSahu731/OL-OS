@@ -28,7 +28,7 @@ exports.getMetrics = getMetrics;
 // @access  Private
 const updateMetric = async (req, res) => {
     try {
-        const { date, weight, hp } = req.body;
+        const { date, weight, hp, calories, water, macros } = req.body;
         if (!date) {
             res.status(400).json({ message: 'Date is required' });
             return;
@@ -36,7 +36,10 @@ const updateMetric = async (req, res) => {
         const metric = await DailyMetric_1.default.findOneAndUpdate({ user: req.user.id, date }, {
             $set: {
                 ...(weight !== undefined && { weight }),
-                ...(hp !== undefined && { hp })
+                ...(hp !== undefined && { hp }),
+                ...(calories !== undefined && { calories }),
+                ...(water !== undefined && { water }),
+                ...(macros !== undefined && { macros }),
             }
         }, { new: true, upsert: true });
         res.status(200).json(metric);

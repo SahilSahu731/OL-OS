@@ -12,6 +12,19 @@ router.route('/')
     .get(authMiddleware_1.protect, financeController_1.getTransactions)
     .post(authMiddleware_1.protect, financeController_1.addTransaction);
 router.route('/summary').get(authMiddleware_1.protect, financeController_1.getFinanceSummary);
+// Goals
+router.route('/goals')
+    .get(authMiddleware_1.protect, financeController_1.getGoals)
+    .post(authMiddleware_1.protect, financeController_1.addGoal);
+router.route('/goals/:id')
+    .put(authMiddleware_1.protect, financeController_1.updateGoal)
+    .delete(authMiddleware_1.protect, financeController_1.deleteGoal);
+// Budgets
+router.route('/budgets')
+    .get(authMiddleware_1.protect, financeController_1.getBudgets)
+    .post(authMiddleware_1.protect, financeController_1.addBudget);
+router.route('/budgets/:id')
+    .delete(authMiddleware_1.protect, financeController_1.deleteBudget);
 router.route('/debts')
     .get(authMiddleware_1.protect, debtController_1.getDebts)
     .post(authMiddleware_1.protect, debtController_1.addDebt);

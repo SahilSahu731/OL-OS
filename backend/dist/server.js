@@ -37,9 +37,11 @@ app.use('/api/v1/content', contentRoutes_1.default);
 const workoutRoutes_1 = __importDefault(require("./routes/workoutRoutes"));
 const noteRoutes_1 = __importDefault(require("./routes/noteRoutes"));
 const roadmapRoutes_1 = __importDefault(require("./routes/roadmapRoutes"));
+const routineRoutes_1 = __importDefault(require("./routes/routineRoutes"));
 app.use('/api/v1/workouts', workoutRoutes_1.default);
 app.use('/api/v1/notes', noteRoutes_1.default);
 app.use('/api/v1/roadmap', roadmapRoutes_1.default);
+app.use('/api/v1/routines', routineRoutes_1.default);
 app.get('/', (req, res) => {
     res.send('Life Tracking System API is running');
 });
