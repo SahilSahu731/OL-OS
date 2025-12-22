@@ -7,6 +7,8 @@ export interface ExerciseSet {
   reps: number;
   rpe?: number;
   completed: boolean;
+  duration?: number;
+  grade?: 'A' | 'B' | 'C';
 }
 
 export interface Exercise {
@@ -21,7 +23,7 @@ export interface Workout {
   user: string;
   name: string;
   date: string;
-  duration: number;
+  duration: number; // in minutes
   exercises: Exercise[];
   notes?: string;
   createdAt: string;
