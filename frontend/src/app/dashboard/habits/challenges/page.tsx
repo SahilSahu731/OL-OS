@@ -69,7 +69,7 @@ export default function ChallengesPage() {
         description: '',
         daysTotal: 30,
         icon: '⚔️',
-        mode: 'standard', // 'standard' | 'hardcore'
+        mode: 'standard' as 'standard' | 'hardcore',
         stakes: '',
         rules: [''] 
     });
