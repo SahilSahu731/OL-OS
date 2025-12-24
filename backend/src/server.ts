@@ -50,6 +50,9 @@ app.use('/api/v1/routines', routineRoutes);
 import foodRoutes from './routes/foodRoutes';
 app.use('/api/v1/foods', foodRoutes);
 
+import challengeRoutes from './routes/challengeRoutes';
+app.use('/api/v1/challenges', challengeRoutes);
+
 app.get('/', (req: express.Request, res: express.Response) => {
   res.send('Life Tracking System API is running');
 });
