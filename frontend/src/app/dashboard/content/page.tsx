@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { 
     LayoutDashboard, Youtube, Twitter, Globe, Linkedin, 
     ArrowRight, Activity, Calendar, FileText, CheckCircle2,
-    Sparkles, Zap, TrendingUp, Users
+    Sparkles, Zap, TrendingUp, Users, Instagram
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -40,6 +40,18 @@ export default function ContentOverviewPage() {
             count: contents.filter(c => c.platform === 'youtube').length,
             desc: "Long-form video production pipeline.",
             gradient: "from-red-500/5 to-orange-500/5"
+        },
+        {
+            id: 'instagram',
+            label: 'Instagram',
+            icon: Instagram, 
+            color: 'text-pink-500',
+            bg: 'bg-pink-500/10 dark:bg-pink-500/10 bg-pink-50',
+            border: 'border-pink-500/20',
+            href: '/dashboard/content/instagram',
+            count: contents.filter(c => c.platform === 'instagram').length,
+            desc: "Visual grid planning and reels.",
+            gradient: "from-purple-500/5 to-pink-500/5"
         },
         {
             id: 'twitter',

@@ -81,13 +81,13 @@ export default function NotFound() {
                         <Link href="/dashboard">
                             <span className="absolute inset-0 w-full h-full bg-white/5 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
                             <Terminal className="mr-2 h-4 w-4 text-emerald-500" /> 
-                            <span className="relative font-bold spacing-wider uppercase text-xs">Return to Grid</span>
+                            <span className="relative font-bold spacing-wider uppercase text-xs">Return to Dashboard</span>
                         </Link>
                     </Button>
                     <Button variant="ghost" asChild className="h-12 text-zinc-400 hover:text-white hover:bg-transparent min-w-[160px]">
                         <Link href="/">
                            <ArrowLeft className="mr-2 h-4 w-4" /> 
-                           <span className="text-xs uppercase tracking-widest">Back to Origin</span>
+                           <span className="text-xs uppercase tracking-widest">Back to Home</span>
                         </Link>
                     </Button>
                 </div>

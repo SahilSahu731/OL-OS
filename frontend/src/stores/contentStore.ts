@@ -13,6 +13,13 @@ export interface ContentItem {
   tags?: string[];
   scheduledDate?: string;
   publishedDate?: string;
+  tasks?: { id: string; text: string; isCompleted: boolean; phase?: string }[];
+  metrics?: { views: number; likes: number; comments: number; ctr: number; retention: number };
+  branding?: { thumbnailA?: string; thumbnailB?: string; selectedThumbnail?: string };
+  researchNotes?: string;
+  researchLinks?: { title: string; url: string }[];
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 interface ContentStore {

@@ -12,7 +12,7 @@ export const getContents = async (req: Request, res: Response) => {
 
 export const createContent = async (req: Request, res: Response) => {
   try {
-    const { title, platform, type, status, description, script, tags, scheduledDate } = req.body;
+    const { title, platform, type, status, description, script, tags, scheduledDate, tasks, metrics, branding, researchNotes, researchLinks } = req.body;
     const content = await Content.create({
       user: (req as any).user.id,
       title,
@@ -22,7 +22,12 @@ export const createContent = async (req: Request, res: Response) => {
       description,
       script,
       tags,
-      scheduledDate
+      scheduledDate,
+      tasks,
+      metrics,
+      branding,
+      researchNotes,
+      researchLinks
     });
     res.status(201).json(content);
   } catch (error) {
