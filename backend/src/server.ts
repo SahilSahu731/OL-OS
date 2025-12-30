@@ -29,6 +29,15 @@ import { initScheduledJobs } from './utils/scheduler';
 // Seed Data
 initScheduledJobs();
 
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    status: "ok",
+    message: "Server is healthy",
+    time: new Date().toISOString(),
+  });
+});
+
+
 // Routes
 app.use('/api/v1/users', authRoutes);
 app.use('/api/v1/categories', categoryRoutes);
