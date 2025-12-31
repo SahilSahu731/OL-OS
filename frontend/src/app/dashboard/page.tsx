@@ -40,6 +40,7 @@ import {
 } from "lucide-react";
 import { format, subDays, parseISO } from "date-fns";
 import { cn } from "@/lib/utils";
+import { ContentActiveWidget } from "@/components/ContentActiveWidget";
 
 const QUOTES = [
   {
@@ -262,6 +263,10 @@ export default function DashboardPage() {
     const published = contents.filter((c) => c.status === "published").length;
     return { ideas, inProgress, published };
   }, [contents]);
+
+  const activeContent = contents.filter((c) =>
+    ["scripting", "filming", "editing"].includes(c.status)
+  );
 
   if (!user) return null;
   // ... rank logic ...
@@ -560,46 +565,58 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
 
-        {/* CONTENT CARD */}
-        <Card
-          className="md:col-span-2 border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50 cursor-pointer hover:border-purple-500/20 transition-colors group"
-          onClick={() => router.push("/dashboard/content")}
-        >
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-base font-bold flex items-center gap-2">
-              <Video className="w-5 h-5 text-purple-500" /> Content Factory
-            </CardTitle>
-            <ArrowRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
-          </CardHeader>
-          <CardContent>
-            <div className="flex gap-4">
-              <div className="flex-1 p-3 bg-purple-500/10 rounded-lg text-center">
-                <div className="text-2xl font-black text-purple-600 dark:text-purple-400">
-                  {contentStats.ideas}
-                </div>
-                <div className="text-[10px] font-bold uppercase text-purple-500/70">
-                  Ideas
-                </div>
-              </div>
-              <div className="flex-1 p-3 bg-blue-500/10 rounded-lg text-center">
-                <div className="text-2xl font-black text-blue-600 dark:text-blue-400">
-                  {contentStats.inProgress}
-                </div>
-                <div className="text-[10px] font-bold uppercase text-blue-500/70">
-                  In Progress
-                </div>
-              </div>
-              <div className="flex-1 p-3 bg-green-500/10 rounded-lg text-center">
-                <div className="text-2xl font-black text-green-600 dark:text-green-400">
-                  {contentStats.published}
-                </div>
-                <div className="text-[10px] font-bold uppercase text-green-500/70">
-                  Live
-                </div>
-              </div>
+        {/* CONTENT CARD OR ACTIVE WIDGET */}
+        {activeContent.length > 0 ? (
+          <div className="md:col-span-2 relative group">
+            <div className="absolute -inset-0.5 bg-linear-to-r from-pink-500 to-purple-500 rounded-xl opacity-20 blur group-hover:opacity-40 transition-opacity" />
+            <div
+              className="relative cursor-pointer"
+              onClick={() => router.push("/dashboard/content/track")}
+            >
+              <ContentActiveWidget item={activeContent[0]} />
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        ) : (
+          <Card
+            className="md:col-span-2 border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50 cursor-pointer hover:border-purple-500/20 transition-colors group"
+            onClick={() => router.push("/dashboard/content")}
+          >
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-base font-bold flex items-center gap-2">
+                <Video className="w-5 h-5 text-purple-500" /> Content Factory
+              </CardTitle>
+              <ArrowRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+            </CardHeader>
+            <CardContent>
+              <div className="flex gap-4">
+                <div className="flex-1 p-3 bg-purple-500/10 rounded-lg text-center">
+                  <div className="text-2xl font-black text-purple-600 dark:text-purple-400">
+                    {contentStats.ideas}
+                  </div>
+                  <div className="text-[10px] font-bold uppercase text-purple-500/70">
+                    Ideas
+                  </div>
+                </div>
+                <div className="flex-1 p-3 bg-blue-500/10 rounded-lg text-center">
+                  <div className="text-2xl font-black text-blue-600 dark:text-blue-400">
+                    {contentStats.inProgress}
+                  </div>
+                  <div className="text-[10px] font-bold uppercase text-blue-500/70">
+                    In Progress
+                  </div>
+                </div>
+                <div className="flex-1 p-3 bg-green-500/10 rounded-lg text-center">
+                  <div className="text-2xl font-black text-green-600 dark:text-green-400">
+                    {contentStats.published}
+                  </div>
+                  <div className="text-[10px] font-bold uppercase text-green-500/70">
+                    Live
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* WIDGETS ROW - SYSTEM MODULES */}
         <div className="md:col-span-4 grid grid-cols-1 md:grid-cols-3 gap-6">
