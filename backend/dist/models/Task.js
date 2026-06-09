@@ -4,6 +4,32 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importDefault(require("mongoose"));
+const timeBlockSchema = new mongoose_1.default.Schema({
+    label: {
+        type: String,
+        trim: true,
+    },
+    startTime: {
+        type: String,
+        required: true,
+        match: /^([01]\d|2[0-3]):[0-5]\d$/,
+    },
+    endTime: {
+        type: String,
+        required: true,
+        match: /^([01]\d|2[0-3]):[0-5]\d$/,
+    },
+    days: {
+        type: [Number],
+        default: [0, 1, 2, 3, 4, 5, 6],
+    },
+    active: {
+        type: Boolean,
+        default: true,
+    },
+}, {
+    _id: true,
+});
 const taskSchema = new mongoose_1.default.Schema({
     user: {
         type: mongoose_1.default.Schema.Types.ObjectId,
@@ -40,7 +66,11 @@ const taskSchema = new mongoose_1.default.Schema({
     active: {
         type: Boolean,
         default: true,
-    }
+    },
+    timeBlocks: {
+        type: [timeBlockSchema],
+        default: [],
+    },
 }, {
     timestamps: true
 });

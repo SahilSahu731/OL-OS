@@ -41,6 +41,7 @@ import {
 import { format, subDays, parseISO } from "date-fns";
 import { cn } from "@/lib/utils";
 import { ContentActiveWidget } from "@/components/ContentActiveWidget";
+import { NowPulse } from "@/components/NowPulse";
 
 const QUOTES = [
   {
@@ -352,6 +353,8 @@ export default function DashboardPage() {
           </div>
         </div>
       </div>
+
+      <NowPulse variant="dashboard" />
 
       <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-4 gap-8">
         {/* ... stats cards ... */}

@@ -14,7 +14,7 @@ const getContents = async (req, res) => {
 exports.getContents = getContents;
 const createContent = async (req, res) => {
     try {
-        const { title, platform, type, status, description, script, tags, scheduledDate } = req.body;
+        const { title, platform, type, status, description, script, tags, scheduledDate, tasks, metrics, branding, researchNotes, researchLinks } = req.body;
         const content = await Content_1.Content.create({
             user: req.user.id,
             title,
@@ -24,7 +24,12 @@ const createContent = async (req, res) => {
             description,
             script,
             tags,
-            scheduledDate
+            scheduledDate,
+            tasks,
+            metrics,
+            branding,
+            researchNotes,
+            researchLinks
         });
         res.status(201).json(content);
     }

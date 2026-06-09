@@ -26,6 +26,13 @@ const scheduler_1 = require("./utils/scheduler");
 // ...
 // Seed Data
 (0, scheduler_1.initScheduledJobs)();
+app.get("/health", (req, res) => {
+    res.status(200).json({
+        status: "ok",
+        message: "Server is healthy",
+        time: new Date().toISOString(),
+    });
+});
 // Routes
 app.use('/api/v1/users', authRoutes_1.default);
 app.use('/api/v1/categories', categoryRoutes_1.default);
@@ -44,6 +51,8 @@ app.use('/api/v1/roadmap', roadmapRoutes_1.default);
 app.use('/api/v1/routines', routineRoutes_1.default);
 const foodRoutes_1 = __importDefault(require("./routes/foodRoutes"));
 app.use('/api/v1/foods', foodRoutes_1.default);
+const challengeRoutes_1 = __importDefault(require("./routes/challengeRoutes"));
+app.use('/api/v1/challenges', challengeRoutes_1.default);
 app.get('/', (req, res) => {
     res.send('Life Tracking System API is running');
 });

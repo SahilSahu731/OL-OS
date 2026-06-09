@@ -1,7 +1,6 @@
 import { create } from 'zustand';
 import api from '@/lib/axios';
 import { useAuthStore } from './authStore';
-import { startOfWeek, endOfWeek, eachDayOfInterval, format } from 'date-fns';
 
 export interface Link {
   _id: string;
@@ -21,6 +20,16 @@ export interface Task {
   active: boolean;
   status?: 'todo' | 'in-progress' | 'completed';
   links?: Link[];
+  timeBlocks?: TimeBlock[];
+}
+
+export interface TimeBlock {
+  _id?: string;
+  label?: string;
+  startTime: string;
+  endTime: string;
+  days: number[];
+  active?: boolean;
 }
 
 export interface TaskLog {
@@ -84,6 +93,35 @@ export interface DailyMetricsData {
   supplements?: { id: string; name: string; taken: boolean }[];
 }
 
+export interface NowScheduleItem {
+  id: string;
+  task: Task;
+  block: TimeBlock;
+  startMinutes: number;
+  endMinutes: number;
+  isCompleted: boolean;
+  isCurrent: boolean;
+  isPast: boolean;
+  isUpcoming: boolean;
+  minutesUntilStart: number;
+  minutesRemaining: number;
+}
+
+export interface NowPlan {
+  date: string;
+  time: string;
+  day: number;
+  current: NowScheduleItem | null;
+  next: NowScheduleItem | null;
+  schedule: NowScheduleItem[];
+  unscheduled: Task[];
+  stats: {
+    scheduled: number;
+    completed: number;
+    remaining: number;
+  };
+}
+
 interface TaskState {
   tasks: Task[];
   logs: Record<string, boolean>; // Key: "taskId-date", Value: true (completed)
@@ -95,6 +133,8 @@ interface TaskState {
   createTask: (taskData: Omit<Task, '_id'>) => Promise<void>;
   updateTask: (id: string, taskData: Partial<Task>) => Promise<void>;
   deleteTask: (id: string) => Promise<void>;
+  nowPlan: NowPlan | null;
+  fetchNowPlan: (date: string, time: string, day: number) => Promise<void>;
   
   fetchLogs: (startDate: string, endDate: string) => Promise<void>;
   toggleLog: (taskId: string, date: string) => Promise<void>;
@@ -119,6 +159,7 @@ export const useTaskStore = create<TaskState>((set, get) => ({
   foods: [],
   isLoading: false,
   error: null,
+  nowPlan: null,
 
   fetchTasks: async () => {
     set({ isLoading: true, error: null });
@@ -184,6 +225,15 @@ export const useTaskStore = create<TaskState>((set, get) => ({
         error: error.response?.data?.message || 'Failed to delete task' 
       });
       throw error;
+    }
+  },
+
+  fetchNowPlan: async (date, time, day) => {
+    try {
+      const response = await api.get(`/tasks/now?date=${date}&time=${time}&day=${day}`);
+      set({ nowPlan: response.data });
+    } catch (error) {
+      console.error('Failed to fetch now plan', error);
     }
   },
 

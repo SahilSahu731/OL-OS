@@ -3,6 +3,27 @@ import Task from '../models/Task';
 import TaskLog from '../models/TaskLog';
 import User from '../models/User';
 
+const toMinutes = (time: string) => {
+  const [hours, minutes] = time.split(':').map(Number);
+  return (hours * 60) + minutes;
+};
+
+const clampDateString = (value?: string) => {
+  if (!value || !/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    return new Date().toISOString().slice(0, 10);
+  }
+
+  return value;
+};
+
+const clampTimeString = (value?: string) => {
+  if (!value || !/^([01]\d|2[0-3]):[0-5]\d$/.test(value)) {
+    return new Date().toTimeString().slice(0, 5);
+  }
+
+  return value;
+};
+
 // @desc    Get user tasks
 // @route   GET /api/v1/tasks
 // @access  Private
@@ -20,7 +41,7 @@ export const getTasks = async (req: any, res: Response) => {
 // @access  Private
 export const createTask = async (req: any, res: Response) => {
   try {
-    const { title, description, category, difficulty, startDate, endDate } = req.body;
+    const { title, description, category, difficulty, startDate, endDate, timeBlocks } = req.body;
 
     if (!title) {
       res.status(400).json({ message: 'Please provide a title' });
@@ -35,9 +56,100 @@ export const createTask = async (req: any, res: Response) => {
       difficulty,
       startDate: startDate || Date.now(),
       endDate,
+      timeBlocks,
     });
 
     res.status(201).json(task);
+  } catch (error) {
+    res.status(500).json({ message: (error as Error).message });
+  }
+};
+
+// @desc    Get now-focused habit schedule
+// @route   GET /api/v1/tasks/now
+// @access  Private
+export const getNowPlan = async (req: any, res: Response) => {
+  try {
+    const date = clampDateString(req.query.date);
+    const time = clampTimeString(req.query.time);
+    const day = Number.isInteger(Number(req.query.day))
+      ? Number(req.query.day)
+      : new Date(`${date}T00:00:00`).getDay();
+    const nowMinutes = toMinutes(time);
+
+    const tasks = await Task.find({ user: req.user.id, active: true })
+      .populate('category', 'name slug');
+    const logs = await TaskLog.find({
+      user: req.user.id,
+      month: date.substring(0, 7),
+    });
+    const completedTaskIds = new Set<string>();
+    const dayOfMonth = Number(date.substring(8, 10));
+
+    logs.forEach((log: any) => {
+      if (log.completedDays.includes(dayOfMonth)) {
+        completedTaskIds.add(log.task.toString());
+      }
+    });
+
+    const schedule = tasks.flatMap((task: any) => {
+      const timeBlocks = task.timeBlocks || [];
+
+      return timeBlocks
+        .filter((block: any) => block.active !== false)
+        .filter((block: any) => block.days?.includes(day))
+        .map((block: any) => {
+          const startMinutes = toMinutes(block.startTime);
+          const endMinutes = toMinutes(block.endTime);
+
+          return {
+            id: `${task._id}-${block._id}`,
+            task,
+            block: {
+              _id: block._id,
+              label: block.label,
+              startTime: block.startTime,
+              endTime: block.endTime,
+              days: block.days,
+              active: block.active,
+            },
+            startMinutes,
+            endMinutes,
+            isCompleted: completedTaskIds.has(task._id.toString()),
+            isCurrent: startMinutes <= nowMinutes && nowMinutes < endMinutes,
+            isPast: endMinutes <= nowMinutes,
+            isUpcoming: startMinutes > nowMinutes,
+            minutesUntilStart: startMinutes - nowMinutes,
+            minutesRemaining: endMinutes - nowMinutes,
+          };
+        });
+    }).sort((a, b) => a.startMinutes - b.startMinutes);
+
+    const current = schedule.find((item) => item.isCurrent && !item.isCompleted) ||
+      schedule.find((item) => item.isCurrent) ||
+      null;
+    const next = schedule.find((item) => item.isUpcoming && !item.isCompleted) ||
+      schedule.find((item) => item.isUpcoming) ||
+      null;
+    const unscheduled = tasks.filter((task: any) => {
+      const timeBlocks = task.timeBlocks || [];
+      return timeBlocks.filter((block: any) => block.active !== false).length === 0;
+    });
+
+    res.status(200).json({
+      date,
+      time,
+      day,
+      current,
+      next,
+      schedule,
+      unscheduled,
+      stats: {
+        scheduled: schedule.length,
+        completed: schedule.filter((item) => item.isCompleted).length,
+        remaining: schedule.filter((item) => !item.isCompleted && !item.isPast).length,
+      },
+    });
   } catch (error) {
     res.status(500).json({ message: (error as Error).message });
   }

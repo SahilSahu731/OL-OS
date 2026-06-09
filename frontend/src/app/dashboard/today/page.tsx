@@ -21,6 +21,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
+import { NowPulse } from '@/components/NowPulse';
 
 // --- QUOTES DATABASE ---
 const MOTIVATIONAL_QUOTES = [
@@ -136,7 +137,10 @@ export default function TodayPage() {
         }
     };
 
-    const handleMetricUpdate = (key: string, value: any) => {
+    const handleMetricUpdate = (
+        key: keyof typeof healthMetrics,
+        value: string | number
+    ) => {
         setHealthMetrics(prev => ({ ...prev, [key]: value }));
         // Debounce or save on blur generally better, but for demo:
         // updateMetric(todayStr, { [key]: value }); 
@@ -182,6 +186,8 @@ export default function TodayPage() {
                     </div>
                 </div>
             </div>
+
+            <NowPulse variant="today" />
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
                 

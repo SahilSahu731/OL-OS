@@ -53,6 +53,29 @@ const contentSchema = new mongoose_1.default.Schema({
     },
     thumbnail: {
         type: String
+    },
+    tasks: [{
+            id: String,
+            text: String,
+            isCompleted: { type: Boolean, default: false },
+            phase: { type: String }
+        }],
+    researchNotes: { type: String, default: '' },
+    researchLinks: [{
+            title: String,
+            url: String
+        }],
+    metrics: {
+        views: { type: Number, default: 0 },
+        likes: { type: Number, default: 0 },
+        comments: { type: Number, default: 0 },
+        ctr: { type: Number, default: 0 }, // Click-through rate
+        retention: { type: Number, default: 0 } // Avg view duration %
+    },
+    branding: {
+        thumbnailA: String,
+        thumbnailB: String,
+        selectedThumbnail: String
     }
 }, { timestamps: true });
 exports.Content = mongoose_1.default.model('Content', contentSchema);

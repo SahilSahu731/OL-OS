@@ -123,27 +123,85 @@ export const generateDailyCheckIn = () => {
     `);
 };
 
+export const generateDailyReport = (report: any) => {
+    const metricRows = [
+        ['Daily Score', `${report.score}%`],
+        ['Habits Completed', `${report.completedHabits}/${report.totalHabits}`],
+        ['Weight', report.weight ? `${report.weight} kg` : 'Not logged'],
+        ['Sleep / HP', report.hp ? `${report.hp}` : 'Not logged'],
+        ['Calories', report.calories ? `${report.calories} kcal` : 'Not logged'],
+        ['Water', report.water ? `${report.water}` : 'Not logged'],
+        ['Protein', report.macros?.protein ? `${report.macros.protein}g` : 'Not logged'],
+        ['Carbs', report.macros?.carbs ? `${report.macros.carbs}g` : 'Not logged'],
+        ['Fats', report.macros?.fats ? `${report.macros.fats}g` : 'Not logged'],
+    ].map(([label, value]) => `
+        <tr style="border-bottom: 1px solid #27272a;">
+            <td style="padding: 10px 0; color: #a1a1aa;">${label}</td>
+            <td style="padding: 10px 0; text-align: right; color: #fff; font-weight: bold;">${value}</td>
+        </tr>
+    `).join('');
+
+    const missedList = report.missedHabits.slice(0, 6).map((habit: any) => `
+        <div style="margin-bottom: 6px; color: #fca5a5;">[ ] ${habit.title}</div>
+    `).join('');
+
+    return BASE_TEMPLATE('DAILY SYSTEM REPORT', `
+        <div class="section" style="border-left-color: #22c55e;">
+            <div class="section-title" style="color: #22c55e;">Daily Score</div>
+            <div style="font-size: 42px; color: #fff; font-weight: 900; line-height: 1;">${report.score}%</div>
+            <p style="margin: 8px 0 0; color: #a1a1aa;">${report.completedHabits} of ${report.totalHabits} active habits completed on ${report.date}.</p>
+        </div>
+
+        <div class="section" style="border-left-color: #38bdf8;">
+            <div class="section-title" style="color: #38bdf8;">Body & Recovery</div>
+            <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+                ${metricRows}
+            </table>
+        </div>
+
+        <div class="section" style="border-left-color: #f97316;">
+            <div class="section-title" style="color: #f97316;">Attention Queue</div>
+            ${missedList || '<p style="color: #22c55e;">No missed habits logged. Clean execution.</p>'}
+        </div>
+    `);
+};
+
 export const generateWeeklyReport = (stats: any) => {
     return BASE_TEMPLATE('WEEKLY SYSTEM AUDIT', `
         <div class="section" style="border-left-color: #8b5cf6;">
             <div class="section-title" style="color: #8b5cf6;">Performance Summary</div>
             <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
                 <tr style="border-bottom: 1px solid #27272a;">
-                    <td style="padding: 10px 0; color: #a1a1aa;">XP Gained</td>
-                    <td style="padding: 10px 0; text-align: right; color: #22c55e;">+${stats.xpGained}</td>
+                    <td style="padding: 10px 0; color: #a1a1aa;">Habits Completed</td>
+                    <td style="padding: 10px 0; text-align: right; color: #22c55e;">${stats.completedHabits}/${stats.totalHabitSlots}</td>
                 </tr>
                 <tr style="border-bottom: 1px solid #27272a;">
                     <td style="padding: 10px 0; color: #a1a1aa;">Completion Rate</td>
                     <td style="padding: 10px 0; text-align: right; color: #fff;">${stats.completionRate}%</td>
                 </tr>
+                <tr style="border-bottom: 1px solid #27272a;">
+                    <td style="padding: 10px 0; color: #a1a1aa;">Avg Weight</td>
+                    <td style="padding: 10px 0; text-align: right; color: #fff;">${stats.avgWeight || 'Not logged'}</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #27272a;">
+                    <td style="padding: 10px 0; color: #a1a1aa;">Avg Sleep / HP</td>
+                    <td style="padding: 10px 0; text-align: right; color: #fff;">${stats.avgHp || 'Not logged'}</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #27272a;">
+                    <td style="padding: 10px 0; color: #a1a1aa;">Avg Calories</td>
+                    <td style="padding: 10px 0; text-align: right; color: #fff;">${stats.avgCalories || 'Not logged'}</td>
+                </tr>
             </table>
         </div>
 
         <div class="section" style="border-left-color: #10b981;">
-            <div class="section-title" style="color: #10b981;">Financial Status</div>
-            <div style="background: #064e3b; color: #6ee7b7; padding: 15px; border-radius: 4px; text-align: center;">
-                <div style="font-size: 10px; text-transform: uppercase; margin-bottom: 5px;">Net Cash Flow</div>
-                <div style="font-size: 24px; font-weight: bold;">$${stats.financeNet}</div>
+            <div class="section-title" style="color: #10b981;">Weekly Trend</div>
+            <div style="background: #064e3b; color: #6ee7b7; padding: 15px; border-radius: 4px;">
+                <div style="font-size: 12px; line-height: 1.8;">
+                    Best Day: <strong>${stats.bestDay || 'N/A'}</strong><br/>
+                    Reports Included: <strong>${stats.metricDays}</strong> metric days<br/>
+                    Active Habits: <strong>${stats.activeHabits}</strong>
+                </div>
             </div>
         </div>
     `);

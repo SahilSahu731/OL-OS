@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import { LayoutDashboard, User, BookOpen, LogOut, Target, Wallet, Settings, Hourglass, Clapperboard, Dumbbell, Inbox, ListTree, Calendar, ChevronLeft, ChevronRight, Brain, Briefcase, BarChart3 } from 'lucide-react';
+import { LayoutDashboard, User, BookOpen, LogOut, Target, Wallet, Settings, Hourglass, Clapperboard, Dumbbell, Inbox, ListTree, Calendar, ChevronLeft, ChevronRight, Brain, Briefcase, BarChart3, Clock3 } from 'lucide-react';
 import { useAuthStore } from '@/stores/authStore';
 import { useRouter } from 'next/navigation';
 
@@ -38,6 +38,12 @@ export function UserSidebar({ isCollapsed, toggleCollapse }: UserSidebarProps) {
       icon: Calendar,
       href: '/dashboard/today',
       active: pathname === '/dashboard/today',
+    },
+    {
+      label: 'Now',
+      icon: Clock3,
+      href: '/dashboard/now',
+      active: pathname === '/dashboard/now',
     },
     {
       label: 'Profile',

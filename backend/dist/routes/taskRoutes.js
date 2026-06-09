@@ -10,6 +10,8 @@ const router = express_1.default.Router();
 router.route('/logs')
     .get(authMiddleware_1.protect, taskController_1.getTaskLogs)
     .post(authMiddleware_1.protect, taskController_1.toggleTaskLog);
+router.route('/now')
+    .get(authMiddleware_1.protect, taskController_1.getNowPlan);
 router.route('/')
     .get(authMiddleware_1.protect, taskController_1.getTasks)
     .post(authMiddleware_1.protect, taskController_1.createTask);

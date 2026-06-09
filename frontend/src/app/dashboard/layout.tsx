@@ -3,10 +3,13 @@ import { UserSidebar } from "@/components/UserSidebar";
 import { RightSidebar } from "@/components/RightSidebar";
 import { useAuthStore } from "@/stores/authStore";
 import { StatusHUD } from "@/components/StatusHUD";
-import { useEffect, useState } from "react";
+import { type CSSProperties, useEffect, useState } from "react";
 import PageTransition from "@/components/PageTransition";
 import { cn } from "@/lib/utils";
 import { CommandMenu } from "@/components/CommandMenu";
+import { WidgetCustomizer } from "@/components/widgets/WidgetCustomizer";
+import { useWidgetStore } from "@/stores/widgetStore";
+import { NowReminderAgent } from "@/components/NowReminderAgent";
 
 import { BootSequence } from "@/components/BootSequence";
 import { BiosphereBackground } from "@/components/BiosphereBackground";
@@ -24,9 +27,13 @@ export default function DashboardLayout({
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
-  // Right Sidebar State
-  const [isRightSidebarOpen, setIsRightSidebarOpen] = useState(true);
-  const [rightSidebarWidth, setRightSidebarWidth] = useState(300);
+  const {
+    dockWidth,
+    isDockOpen,
+    setDockOpen,
+    setDockWidth,
+    toggleDock,
+  } = useWidgetStore();
 
   useEffect(() => {
     // Check boot status asynchronously to avoid blocking main thread and prevent cascading render warnings
@@ -56,6 +63,8 @@ export default function DashboardLayout({
       <BiosphereBackground />
       {showBoot && <BootSequence onComplete={handleBootComplete} />}
       <CommandMenu />
+      <WidgetCustomizer />
+      <NowReminderAgent />
 
       {/* Mobile Sidebar Overlay */}
       {isMobileOpen && (
@@ -92,12 +101,12 @@ export default function DashboardLayout({
       </div>
 
       {/* Right Sidebar */}
-      {isRightSidebarOpen && (
+      {isDockOpen && (
         <RightSidebar
-          isOpen={isRightSidebarOpen}
-          onClose={() => setIsRightSidebarOpen(false)}
-          width={rightSidebarWidth}
-          onWidthChange={setRightSidebarWidth}
+          isOpen={isDockOpen}
+          onClose={() => setDockOpen(false)}
+          width={dockWidth}
+          onWidthChange={setDockWidth}
         />
       )}
 
@@ -105,17 +114,18 @@ export default function DashboardLayout({
       <main
         className={cn(
           "flex-1 flex flex-col min-h-screen transition-all duration-300 ease-in-out",
-          isCollapsed ? "md:pl-[80px]" : "md:pl-64"
+          isCollapsed ? "md:pl-[80px]" : "md:pl-64",
+          isDockOpen && "md:pr-[var(--dock-width)]"
         )}
-        style={{
-          paddingRight: isRightSidebarOpen ? `${rightSidebarWidth}px` : 0,
-        }}
+        style={
+          {
+            "--dock-width": `${dockWidth}px`,
+          } as CSSProperties
+        }
       >
         <StatusHUD
           onMobileMenuClick={() => setIsMobileOpen(true)}
-          onToggleRightSidebar={() =>
-            setIsRightSidebarOpen(!isRightSidebarOpen)
-          }
+          onToggleRightSidebar={toggleDock}
         />
         <div className="flex-1 p-4 md:p-8 max-w-7xl mx-auto w-full">
           <PageTransition>{children}</PageTransition>

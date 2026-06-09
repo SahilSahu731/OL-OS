@@ -5,12 +5,15 @@ import { Command } from 'cmdk';
 import { useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
 import { 
-  Calculator, Calendar, CreditCard, Settings, User, Dumbbell,
-  LayoutDashboard, LogOut, Plus, Search, Zap, Youtube, Twitter,
-  FileText, Brain, Target, Terminal, ArrowRight, Wallet, Sparkles, Trophy
+  CreditCard, User, Dumbbell,
+  LayoutDashboard, LogOut, Zap, Youtube,
+  Brain, Target, Terminal, ArrowRight, Sparkles, Trophy,
+  PanelRight, SlidersHorizontal, RotateCcw, Moon, Sun, Wind, Clock3
 } from 'lucide-react';
 import { useAuthStore } from '@/stores/authStore';
 import { useCortexStore } from '@/stores/cortexStore'; // Import the store
+import { useAtmosphereStore } from '@/stores/atmosphereStore';
+import { useWidgetStore } from '@/stores/widgetStore';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 
@@ -20,6 +23,8 @@ export function CommandMenu() {
   const router = useRouter();
   const { setTheme } = useTheme();
   const { logout } = useAuthStore();
+  const { setMode } = useAtmosphereStore();
+  const { toggleDock, setCustomizerOpen, resetWidgets } = useWidgetStore();
   const [val, setVal] = React.useState('');
 
   React.useEffect(() => {
@@ -138,7 +143,7 @@ export function CommandMenu() {
                           </div>
                           <div>
                               <p className="text-zinc-300 font-medium">No direct command found.</p>
-                              <p className="text-xs text-zinc-500 mt-1">Press <span className="text-zinc-400 font-mono">ENTER</span> to let Cortex process: <span className="text-purple-400">"{val}"</span></p>
+                              <p className="text-xs text-zinc-500 mt-1">Press <span className="text-zinc-400 font-mono">ENTER</span> to let Cortex process: <span className="text-purple-400">&quot;{val}&quot;</span></p>
                           </div>
                           <button 
                             onClick={executeInput}
@@ -161,7 +166,7 @@ export function CommandMenu() {
                       <CommandItem onSelect={executeInput}>
                           <Sparkles className="mr-2 h-4 w-4 text-purple-400" />
                           <span className="text-purple-100 font-medium mr-2">Process with Cortex AI:</span> 
-                          <span className="text-zinc-400 truncate">"{val}"</span>
+                          <span className="text-zinc-400 truncate">&quot;{val}&quot;</span>
                       </CommandItem>
                   </Command.Group>
               )}
@@ -169,7 +174,11 @@ export function CommandMenu() {
               <Command.Group heading="Suggested Actions" className="text-zinc-500 px-2 py-1.5 text-[10px] font-bold uppercase tracking-wider">
                 <CommandItem onSelect={() => runCommand(() => router.push('/dashboard/today'))}>
                   <LayoutDashboard className="mr-3 h-4 w-4 text-white" />
-                  <span>Today's Dashboard</span>
+                  <span>Today&apos;s Dashboard</span>
+                </CommandItem>
+                <CommandItem onSelect={() => runCommand(() => router.push('/dashboard/now'))}>
+                  <Clock3 className="mr-3 h-4 w-4 text-cyan-400" />
+                  <span>Open Now Engine</span>
                 </CommandItem>
                 <CommandItem onSelect={() => runCommand(() => router.push('/dashboard/habits/challenges'))}>
                    <Trophy className="mr-3 h-4 w-4 text-yellow-500" />
@@ -178,6 +187,35 @@ export function CommandMenu() {
                 <CommandItem onSelect={() => runCommand(() => router.push('/dashboard/content/youtube?action=new'))}>
                    <Zap className="mr-3 h-4 w-4 text-blue-500" />
                    <span>Quick Capture Idea</span>
+                </CommandItem>
+              </Command.Group>
+
+              <Command.Separator className="h-px bg-zinc-800/50 my-2" />
+
+              <Command.Group heading="OS Overlay" className="text-zinc-500 px-2 py-1.5 text-[10px] font-bold uppercase tracking-wider">
+                <CommandItem onSelect={() => runCommand(() => toggleDock())}>
+                  <PanelRight className="mr-3 h-4 w-4 text-cyan-400" />
+                  <span>Toggle Widget Dock</span>
+                </CommandItem>
+                <CommandItem onSelect={() => runCommand(() => setCustomizerOpen(true))}>
+                  <SlidersHorizontal className="mr-3 h-4 w-4 text-purple-400" />
+                  <span>Customize Widgets</span>
+                </CommandItem>
+                <CommandItem onSelect={() => runCommand(() => resetWidgets())}>
+                  <RotateCcw className="mr-3 h-4 w-4 text-amber-400" />
+                  <span>Reset Widget Layout</span>
+                </CommandItem>
+                <CommandItem onSelect={() => runCommand(() => setMode('focus'))}>
+                  <Moon className="mr-3 h-4 w-4 text-blue-400" />
+                  <span>Atmosphere: Focus</span>
+                </CommandItem>
+                <CommandItem onSelect={() => runCommand(() => setMode('energy'))}>
+                  <Sun className="mr-3 h-4 w-4 text-orange-400" />
+                  <span>Atmosphere: Energy</span>
+                </CommandItem>
+                <CommandItem onSelect={() => runCommand(() => setMode('zen'))}>
+                  <Wind className="mr-3 h-4 w-4 text-emerald-400" />
+                  <span>Atmosphere: Zen</span>
                 </CommandItem>
               </Command.Group>
 

@@ -5,7 +5,8 @@ import {
     updateTask, 
     deleteTask,
     getTaskLogs,
-    toggleTaskLog 
+    toggleTaskLog,
+    getNowPlan
 } from '../controllers/taskController';
 import { protect } from '../middleware/authMiddleware';
 
@@ -14,6 +15,9 @@ const router = express.Router();
 router.route('/logs')
   .get(protect, getTaskLogs)
   .post(protect, toggleTaskLog);
+
+router.route('/now')
+  .get(protect, getNowPlan);
 
 router.route('/')
   .get(protect, getTasks)
